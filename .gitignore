@@ -1,0 +1,20 @@
+# 生成物 / 原始素材
+art-source/
+vibe_images/
+dist/
+.tmp-webp/
+
+# 依赖与缓存
+node_modules/
+__pycache__/
+tools/__pycache__/
+*.pyc
+
+# 截图与交接文档
+shot-*.png
+dist-check-*.png
+live-*.png
+项目交接书.md
+
+# 本机站点绑定
+*.qoder.site
