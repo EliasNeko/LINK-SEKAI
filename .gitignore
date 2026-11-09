@@ -4,6 +4,7 @@ vibe_images/
 dist/
 .tmp-webp/
 .tmp-*
+_tmp_*
 
 # 依赖与缓存
 node_modules/

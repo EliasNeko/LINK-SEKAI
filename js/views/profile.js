@@ -183,6 +183,12 @@
     const armLangId = armLangFor(target);
     const equ = slotItem(target, 'weapon', armLangId);
     const eqQ = equ ? gearQuality(equ) : null;
+    /* 觉醒形象：档案页展示当前职业熟练度对应的阶段立绘（二阶 / 三阶有专属图）。 */
+    const awake = LS.proficiency ? LS.proficiency(target, primary.id)
+      : { score: 0, stage: 0, rank: { name: '未入门', color: '#7d8496' }, nextStage: null };
+    const awakeStage = (LS.PROF_STAGES && LS.PROF_STAGES[awake.stage]) || { stage: 0, name: '默认形象', jp: '初期' };
+    const awakeMeta = LS.heroMeta(primary.id);
+    const awakeNext = awake.nextStage ? Math.max(0, awake.nextStage.min - awake.score) : 0;
 
     return {
       html: `<div class="profile-page" style="--my-color:${primary ? primary.color : '#c9a45c'}">
@@ -260,6 +266,23 @@
           </main>
 
           <aside class="pf-side">
+            <div class="pf-side-card pf-awaken" style="--lang-color:${primary.color}">
+              <div class="panel-head"><div><div class="kicker-jp">覚醒 · AWAKENED</div><h3>${LS.esc(awakeMeta.name)} <em>${LS.esc(awakeStage.name)}</em></h3></div><span class="chip" style="color:${awake.rank.color};border-color:${awake.rank.color}">${LS.esc(awake.rank.name)}</span></div>
+              <div class="pf-awaken-art">
+                <span class="pf-awaken-glow" aria-hidden="true"></span>
+                ${LS.heroImg(primary.id, 226, 'pf-awaken-img', awakeMeta.title, 'idle', awake.stage)}
+                <span class="pf-awaken-badge">${LS.esc(awakeStage.jp)}</span>
+              </div>
+              <div class="pf-awaken-score"><b>${awake.score}</b><span>/ 1000 熟练度</span></div>
+              <div class="progress"><i style="width:${awake.score / 10}%"></i></div>
+              <div class="prof-stages" aria-hidden="true">
+                ${LS.PROF_STAGES.map(s => `<span class="ps-pip ${awake.stage >= s.stage ? 'on' : ''}" title="${LS.esc(s.name)}">${s.stage === 0 ? '初' : s.stage}</span>`).join('<i></i>')}
+              </div>
+              <div class="prof-next">${awake.nextStage ? `距 ${LS.esc(awake.nextStage.name)} 还需 <b>${awakeNext}</b>` : '已抵达第三阶段 · 源核同调'}</div>
+              <p class="pf-awaken-note">${awake.stage >= 2 ? '当前阶段专属觉醒立绘，战斗三态同步换装。' : '继续修习至 600 熟练度，换上第二阶段觉醒立绘。'}</p>
+              <a class="btn btn-sm btn-ghost pf-awaken-link" href="#/proficiency">查看六职业觉醒 ${LS.icon('arrow', 11)}</a>
+            </div>
+
             <div class="pf-side-card paper corner-mark">
               <div class="kicker-jp">档案摘记 · RECORD</div>
               <div class="pf-info-list">

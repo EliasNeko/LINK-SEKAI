@@ -1532,6 +1532,42 @@ pre.code-block, .code-block-wrap pre.code-block {
 .pf-side { display: grid; gap: 13px; }
 .pf-side-card { padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: rgba(20, 16, 26, .46); }
 .pf-side-card.paper { padding: 22px; }
+
+/* profile · 觉醒形象卡（二阶 / 三阶专属立绘） */
+.pf-awaken { position: relative; overflow: hidden; }
+.pf-awaken::before {
+  content: ''; position: absolute; inset: -50px -30px auto; height: 240px; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 34%, color-mix(in srgb, var(--lang-color) 22%, transparent), transparent 70%);
+}
+.pf-awaken .panel-head { position: relative; z-index: 2; align-items: flex-start; }
+.pf-awaken .panel-head h3 em { font-style: normal; font-size: 9px; color: var(--faint); font-family: var(--font-serif); margin-left: 4px; }
+.pf-awaken-art {
+  position: relative; margin: 12px -18px 13px; height: 248px; overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--lang-color) 15%, transparent), transparent 70%),
+    linear-gradient(180deg, rgba(9, 7, 14, .08), rgba(5, 4, 9, .55));
+}
+.pf-awaken-glow {
+  position: absolute; left: 50%; bottom: 10px; width: 72%; height: 42px; transform: translateX(-50%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--lang-color) 48%, transparent), transparent 70%);
+  filter: blur(11px); pointer-events: none;
+}
+.pf-awaken-img { position: relative; z-index: 1; width: 100%; height: 100% !important; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .5)); }
+.pf-awaken-badge {
+  position: absolute; left: 10px; top: 10px; z-index: 2; padding: 2px 8px; border-radius: 3px;
+  background: rgba(7, 6, 11, .72); border: 1px solid color-mix(in srgb, var(--lang-color) 55%, transparent);
+  color: var(--lang-color); font-size: 8.5px; letter-spacing: .12em; font-family: var(--font-serif);
+}
+.pf-awaken-score { display: flex; align-items: baseline; gap: 6px; }
+.pf-awaken-score b { font-family: var(--font-display); font-size: 26px; color: var(--gold-bright); line-height: 1; }
+.pf-awaken-score span { font-size: 9px; color: var(--faint); font-family: var(--font-serif); }
+.pf-awaken .progress { margin: 7px 0 9px; height: 4px; }
+.pf-awaken .progress > i { background: linear-gradient(90deg, var(--lang-color), var(--gold-bright)); }
+.pf-awaken .prof-stages { margin: 0 0 7px; }
+.pf-awaken-note { font-size: 9px; color: var(--faint); line-height: 1.7; margin: 7px 0 10px; font-family: var(--font-serif); }
+.pf-awaken-link { width: 100%; justify-content: center; }
 .pf-info-list { display: grid; gap: 0; margin-top: 12px; }
 .pf-info-list > div { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; border-bottom: 1px dashed rgba(120, 87, 42, .22); font-size: 10.5px; }
 .pf-info-list > div:last-child { border-bottom: 0; }
@@ -2179,6 +2215,7 @@ pre.code-block, .code-block-wrap pre.code-block {
   .pf-stat:nth-child(3n) { border-right: 0; }
   .pf-stat:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
   .pf-side { grid-template-columns: 1fr; }
+  .pf-awaken-art { height: 330px; }
   .gear-grid, .title-grid { grid-template-columns: 1fr; }
   .friend-grid, .suggest-grid { grid-template-columns: 1fr; }
   .afb-form { grid-template-columns: 1fr; }

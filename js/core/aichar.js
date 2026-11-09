@@ -20,7 +20,7 @@
   const ACTS = ['idle', 'attack', 'hurt'];
   const HERO_DIR = 'assets/heroes/';
   /* 立绘素材版本号：换图后同步 index.html 的 ?v= 一起改，避免浏览器缓存旧图。 */
-  const ASSET_V = '20261109Y';
+  const ASSET_V = '20261109AW';
   LS.ASSET_V = ASSET_V;
   function vurl(p) { return p + '?v=' + ASSET_V; }
   /* 逐角色素材目录覆盖（重做中的角色先走 v6，未重做仍用 v5） */
@@ -37,7 +37,9 @@
   /* 阶段立绘清单：只有实际生成并放入 assets/heroes/ 的阶段才登记。
      未登记的阶段回退到基础立绘，避免请求不存在的 _s2/_s3 文件产生 404；
      阶段差异仍由 [data-stage] 的辉光与战斗特效体现。 */
-  const STAGE_ART_READY = {};
+  const STAGE_ART_READY = {
+    c: [2, 3], cpp: [2, 3], java: [2, 3], javascript: [2, 3], python: [2, 3], go: [2, 3]
+  };
   function stageArtReady(id, s) {
     const list = STAGE_ART_READY[id];
     return !!list && list.indexOf(s) >= 0;

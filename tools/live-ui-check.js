@@ -37,8 +37,8 @@ async function closeAnnouncement(page) {
   await page.waitForTimeout(1200);
 
   const announceText = await page.locator('.announce-modal').innerText().catch(() => '');
-  console.log('announcement:', /v2\.4\.2/.test(announceText) ? 'v2.4.2 ok' : 'MISSING VERSION');
-  console.log('stacking note:', /三装备叠加/.test(announceText) ? 'ok' : 'MISSING');
+  console.log('announcement:', /v2\.5\.0/.test(announceText) ? 'v2.5.0 ok' : 'MISSING VERSION');
+  console.log('awakening art note:', /觉醒立绘/.test(announceText) ? 'ok' : 'MISSING');
   console.log('open source text:', /完全开源/.test(announceText) ? 'ok' : 'MISSING');
   console.log('author:', /龙潜猫隐/.test(announceText) ? 'ok' : 'MISSING');
   const repoLink = await page.locator('.announce-modal .gh-card').getAttribute('href').catch(() => '');
