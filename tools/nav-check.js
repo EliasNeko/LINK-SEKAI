@@ -1,4 +1,5 @@
 const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright');
+const { ensureTestAccount } = require('./test-account');
 
 (async () => {
   const browser = await chromium.launch({ channel: 'msedge' });
@@ -6,7 +7,8 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   const errors = [];
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', e => errors.push('PAGE: ' + e.message));
-  await page.goto('http://localhost:8123/index.html?demo=1#/forge', { waitUntil: 'networkidle' });
+  await ensureTestAccount(page);
+  await page.goto('http://localhost:8123/index.html#/forge', { waitUntil: 'networkidle' });
   await page.evaluate(() => {
     const u = LS.store.current();
     if (!(u.equipment || []).some(e => e.shopId === 'o1')) LS.store.addEquipment(u, LS.shopLoot(LS.shopItem('o1')));

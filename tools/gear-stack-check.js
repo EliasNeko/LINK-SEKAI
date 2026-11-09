@@ -1,5 +1,6 @@
-/* 校验战斗页三装备栏展示与效果叠加（仅 localhost + demo 档） */
+/* 校验战斗页三装备栏展示与效果叠加（仅 localhost + 本地验收账号） */
 const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright');
+const { ensureTestAccount } = require('./test-account');
 
 (async () => {
   const browser = await chromium.launch({ channel: 'msedge' });
@@ -9,12 +10,13 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error' && !/401|409/.test(m.text())) errors.push(m.text()); });
 
-  await page.goto('http://localhost:8123/?demo=1#/profile', { waitUntil: 'networkidle' });
+  await ensureTestAccount(page);
+  await page.goto('http://localhost:8123/#/profile', { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
 
   const data = await page.evaluate(() => {
     const u = LS.store.current();
-    if (!u) return { error: 'no demo user' };
+    if (!u) return { error: 'no test user' };
     ['u2', 'r6'].forEach(id => {
       if (u.equipment.some(e => e.shopId === id)) return;
       const def = LS.shopItem(id);
@@ -34,7 +36,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
     };
   });
 
-  await page.goto('http://localhost:8123/?demo=1#/battle/python/py-2-3', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/#/battle/python/py-2-3', { waitUntil: 'networkidle' });
   await page.waitForTimeout(1800);
 
   const ui = await page.evaluate(() => ({
@@ -47,7 +49,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
 
   const mobile = await ctx.newPage();
   await mobile.setViewportSize({ width: 390, height: 844 });
-  await mobile.goto('http://localhost:8123/?demo=1#/battle/python/py-2-3', { waitUntil: 'networkidle' });
+  await mobile.goto('http://localhost:8123/#/battle/python/py-2-3', { waitUntil: 'networkidle' });
   await mobile.waitForTimeout(1600);
   const m = await mobile.evaluate(() => {
     const u = LS.store.current();
@@ -101,7 +103,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   });
   await page.screenshot({ path: 'shot-gear-infusion-desktop.png', fullPage: true });
 
-  await page.goto('http://localhost:8123/?demo=1#/profile', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/#/profile', { waitUntil: 'networkidle' });
   await page.waitForTimeout(900);
   await page.evaluate(() => {
     const ov = document.querySelector('.announce-modal');

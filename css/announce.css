@@ -142,6 +142,94 @@
   color: var(--gold);
   letter-spacing: .06em;
 }
+.announce-credit {
+  margin: 9px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(201, 164, 92, .16);
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: rgba(214, 205, 232, .46);
+  letter-spacing: .02em;
+}
+.gh-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid rgba(201, 164, 92, .34);
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(255, 110, 199, .075), rgba(255, 255, 255, .015));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .18s ease, background .18s ease;
+}
+.gh-card:hover {
+  border-color: rgba(255, 168, 208, .55);
+  background: linear-gradient(135deg, rgba(255, 110, 199, .12), rgba(255, 255, 255, .03));
+}
+.gh-card:focus-visible, .gh-links a:focus-visible { outline: 2px solid #ffb8df; outline-offset: 2px; }
+.gh-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  color: #f1e6d3;
+  background: linear-gradient(145deg, #2a2030, #151019);
+  border: 1px solid rgba(201, 164, 92, .36);
+  box-shadow: inset 0 0 18px rgba(255, 110, 199, .08);
+}
+.gh-copy { flex: 1; min-width: 0; }
+.gh-copy em {
+  display: block;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 8px; letter-spacing: .18em;
+  color: var(--gold);
+}
+.gh-copy b {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--font-serif);
+  font-size: 13.5px;
+  color: #f1e6d3;
+  letter-spacing: .04em;
+}
+.gh-copy i {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-size: 10.5px;
+  color: #b9ab95;
+  overflow-wrap: anywhere;
+}
+.gh-go {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: #ffb8df;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.gh-intro { margin-top: 10px; }
+.gh-intro p {
+  margin: 0 0 8px;
+  font-size: 12px; line-height: 1.74;
+  color: #cbbca4;
+}
+.gh-intro p:first-child { color: #e4d6bf; }
+.gh-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
+.gh-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid rgba(201, 164, 92, .34);
+  border-radius: 99px;
+  font-size: 10.5px;
+  color: #e4d6bf;
+  text-decoration: none;
+  background: rgba(255, 255, 255, .02);
+  transition: border-color .18s ease, color .18s ease;
+}
+.gh-links a:hover { border-color: rgba(255, 168, 208, .55); color: #ffd9ee; }
 .announce-foot {
   position: relative;
   padding: 14px 26px 20px;
@@ -168,5 +256,11 @@
   .announce-sec-head em { font-size: 9.5px; }
   .announce-list p { font-size: 11.5px; }
   .announce-open p { font-size: 12px; }
+  .gh-card { padding: 10px 11px; gap: 10px; }
+  .gh-mark { width: 34px; height: 34px; border-radius: 8px; }
+  .gh-copy b { font-size: 12.5px; }
+  .gh-copy i { font-size: 9.5px; }
+  .gh-go { display: none; }
+  .gh-intro p { font-size: 11.5px; }
   .announce-foot { padding: 12px 18px 16px; }
 }

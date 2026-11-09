@@ -1,4 +1,5 @@
 const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright');
+const { ensureTestAccount } = require('./test-account');
 
 (async () => {
   const browser = await chromium.launch({ channel: 'msedge' });
@@ -8,7 +9,8 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   page.on('pageerror', e => errors.push('PAGE: ' + e.message));
   page.on('response', r => { if (r.status() >= 400) missing.push(r.status() + ' ' + r.url()); });
 
-  await page.goto('http://localhost:8123/index.html?demo=1#/forge', { waitUntil: 'networkidle' });
+  await ensureTestAccount(page);
+  await page.goto('http://localhost:8123/index.html#/forge', { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
   await page.evaluate(() => {
     const u = LS.store.current();
@@ -42,7 +44,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   });
 
   // shop origin color
-  await page.goto('http://localhost:8123/index.html?demo=1#/shop', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/shop', { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
   const shopInfo = await page.evaluate(() => {
     const cards = [...document.querySelectorAll('.shop-card')].filter(c => c.style.getPropertyValue('--q-color').trim() === '#ff3d55');
@@ -68,7 +70,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
     it.infusion = 3;
     LS.store.save();
   });
-  await page.goto('http://localhost:8123/index.html?demo=1#/profile', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/profile', { waitUntil: 'networkidle' });
   await page.waitForTimeout(800);
   const profileInfo = await page.evaluate(() => {
     const el = document.querySelector('.ls-q');
@@ -82,13 +84,13 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   await page.screenshot({ path: 'shot-profile-infused.png', fullPage: false });
 
   // desktop forge, freshly rendered after final CSS edits
-  await page.goto('http://localhost:8123/index.html?demo=1#/forge', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/forge', { waitUntil: 'networkidle' });
   await page.waitForTimeout(900);
   await page.screenshot({ path: 'shot-forge-desktop.png', fullPage: false });
 
   // mobile forge after scrim + six-column nav
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('http://localhost:8123/index.html?demo=1#/forge', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/forge', { waitUntil: 'networkidle' });
   await page.waitForTimeout(900);
   await page.screenshot({ path: 'shot-forge-mobile2.png', fullPage: true });
   const mobileInfo = await page.evaluate(() => {

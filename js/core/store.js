@@ -33,6 +33,7 @@
       let dirty = false;
       Object.values(this.db.users || {}).forEach(u => { if (this.migrateUser(u)) dirty = true; });
       if (dirty) this.save();
+      this.purgeDemo();
       return this.db;
     },
 
@@ -112,12 +113,19 @@
       try { return localStorage.getItem(SESSION_KEY); } catch (e) { return null; }
     },
     setSession(uid) {
+      const u = this.db && this.db.users ? this.db.users[uid] : null;
+      /* NPC 名录只用于星网展示，永远不能成为可游玩的登录身份。 */
+      if (!u || u.isNPC) { this.clearSession(); return; }
       try { localStorage.setItem(SESSION_KEY, uid); } catch (e) { }
     },
     clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) { } },
     current() {
       const uid = this.sessionUid();
-      return uid ? this.db.users[uid] || null : null;
+      if (!uid) return null;
+      const u = this.db.users[uid] || null;
+      /* 会话指向已删除的档案或 NPC 名录时，直接作废，不留下可复用的登录状态。 */
+      if (!u || u.isNPC) { this.clearSession(); return null; }
+      return u;
     },
     user(uid) { return this.db.users[uid] || null; },
     allUsers() { return Object.values(this.db.users); },
@@ -612,81 +620,24 @@
       if (changed) this.save();
     },
 
-    /* 演示账号/ NPC 的装备栏自修复：只处理 isNPC，绝不动真实玩家存档。 */
-    repairDemoLoadout(u) {
-      if (!u || !u.isNPC || !Array.isArray(u.equipment) || !u.equipment.length) return false;
+    /* 清理旧版本留下的演示档案：只删除 isNPC 且登录名为 demo 的记录，
+       真实玩家账号（包括恰好叫 demo 的注册账号）一律不动。 */
+    purgeDemo() {
       let changed = false;
-      /* 早期演示装备没有实例 id；补上后，失效的装备栏引用才能被正确修复。 */
-      u.equipment.forEach(e => { if (!e.iid) { e.iid = LS.rid('eq'); changed = true; } });
-      (u.activeLangs || []).forEach(l => {
-        const lo = loadoutOf(u, l);
-        CATS.forEach(c => {
-          if (lo[c] && !u.equipment.some(e => e.iid === lo[c])) { lo[c] = null; changed = true; }
-        });
+      Object.keys(this.db.users || {}).forEach(uid => {
+        const u = this.db.users[uid];
+        if (u && u.isNPC && String(u.login || '').toLowerCase() === 'demo') {
+          delete this.db.users[uid];
+          changed = true;
+        }
       });
-      const any = CATS.some(c => (u.activeLangs || []).some(l => loadoutOf(u, l)[c]));
-      if (any) { if (changed) this.save(); return changed; }
-      u.equipment.forEach(e => {
-        const cat = e.cat || CAT_MAP[e.slot] || 'item';
-        const lang = (e.langs || []).includes('all')
-          ? (u.primaryLang || 'python')
-          : ((e.langs || []).find(l => (u.activeLangs || []).includes(l)) || (e.langs || [])[0]);
-        if (!lang || !LS.lang(lang)) return;
-        const lo = loadoutOf(u, lang);
-        const cur = u.equipment.find(x => x.iid === lo[cat]);
-        if (!cur || (LS.itemScore && LS.itemScore(e) > LS.itemScore(cur))) { lo[cat] = e.iid; changed = true; }
+      if (!changed) return false;
+      Object.values(this.db.users || {}).forEach(u => {
+        if (!Array.isArray(u.friends)) return;
+        u.friends = u.friends.filter(f => f && this.db.users[f.uid]);
       });
-      return changed;
-    },
-
-    ensureDemo() {
-      let demo = this.findByLogin('demo');
-      if (demo) { if (this.repairDemoLoadout(demo)) this.save(); return demo; }
-      const uid = this.uniqueUid();
-      const u = this.blankUser({ uid, login: 'demo', gameName: '星野·澪', salt: 'demo', passHash: 'demo' });
-      u.isNPC = true; // NPC flag here = cannot normal-login with password path
-      u.bio = '从演示星门借来的一束光。正在学习 Python 与 JavaScript。';
-      u.activeLangs = ['python', 'javascript'];
-      u.primaryLang = 'python';
-      u.onboardingDone = true;
-      u.char = { skin: '#f6d2b8', hair: '#ff8ecf', hairStyle: 0, outfit: 'ninja', outfitColor: '#2fb7a8', accent: '#ffd57e', accessory: 'ribbon', eye: '#4a3a73' };
-      u.xp = 380; u.coins = 980; u.inspiration = 6;
-      u.titles = ['newcomer', 'first_lesson', 'first_win', 'half'];
-      u.titleEquipped = 'half';
-      ['python', 'javascript'].forEach((lid, i) => {
-        const nodes = (LS.allNodes(lid) || []).slice(0, i === 0 ? 8 : 4);
-        const p = this.progressOf(u, lid);
-        p.done = nodes.map(x => x.id);
-        p.wins = nodes.filter(x => x.type === 'battle').map(x => x.id);
-      });
-      const gear = LS.makeLoot ? LS.makeLoot('rare', '月影苦无', 'weapon', 'ku', '刃身映出尚未写下的代码。', 'python') : null;
-      if (gear) {
-        gear.iid = gear.iid || 'demo-eq-weapon';
-        gear.cat = gear.cat || 'weapon';
-        gear.slot = gear.cat;
-        gear.langs = gear.langs || ['python'];
-        gear.stats = LS.statsOfItem(gear);
-        u.equipment = [gear];
-        u.equipped = { python: { weapon: gear.iid, apparel: null, item: null } };
-        u.equipV = 2;
-      }
-      const star = this.user('LSK-7Q2M');
-      if (star) {
-        u.friends = [{ uid: star.uid, remark: '塔顶的魔法使', since: new Date().toISOString() }];
-        star.friends = star.friends || [];
-        star.friends.push({ uid: u.uid, remark: '', since: new Date().toISOString() });
-      }
-      this.db.users[uid] = u;
       this.save();
-      return u;
-    },
-
-    loginDemo() {
-      const demo = this.ensureDemo();
-      demo.lastLogin = new Date().toISOString();
-      this.setSession(demo.uid);
-      this.save();
-      return demo;
+      return true;
     },
 
     update(fn) {

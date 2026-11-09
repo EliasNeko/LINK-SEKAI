@@ -6,7 +6,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
     const page = await browser.newPage({ viewport: vp, deviceScaleFactor: 1 });
     page.on('console', m => { if (m.type() === 'error') errors.push(name + ': ' + m.text()); });
     page.on('pageerror', e => errors.push(name + ' pageerror: ' + e.message));
-    await page.goto('http://localhost:8123/?demo=1', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:8123/', { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
     const info = await page.evaluate(() => {
       const m = document.querySelector('.announce-modal');

@@ -292,11 +292,6 @@
     const path = parts[0] || '';
 
     if (!u) {
-      /* ?demo=1：无会话时自动进演示档案（仅用于 localhost 校准/测试） */
-      if (/[?&]demo=1/.test(location.search) && LS.store.loginDemo) {
-        LS.store.loginDemo();
-        return render();
-      }
       if (location.hash !== '#/auth') location.hash = '#/auth';
       app.innerHTML = VIEWS.auth ? VIEWS.auth.html() : '';
       if (VIEWS.auth) setTimeout(() => VIEWS.auth.mount(document.getElementById('view-root') || app), 0);
@@ -391,7 +386,6 @@
   function init() {
     LS.store.init();
     LS.store.seed();
-    try { LS.store.ensureDemo(); } catch (e) { console.warn(e); }
     initStarfield();
     addEventListener('hashchange', render);
     render();

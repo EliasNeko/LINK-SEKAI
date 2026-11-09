@@ -1,4 +1,5 @@
 const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules/playwright');
+const { ensureTestAccount } = require('./test-account');
 
 (async () => {
   const browser = await chromium.launch({ channel: 'msedge' });
@@ -8,7 +9,8 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   page.on('pageerror', e => errors.push('PAGE: ' + e.message));
   page.on('response', r => { if (r.status() >= 400) missing.push(r.status() + ' ' + r.url()); });
 
-  await page.goto('http://localhost:8123/index.html?demo=1#/hub', { waitUntil: 'networkidle' });
+  await ensureTestAccount(page);
+  await page.goto('http://localhost:8123/index.html#/hub', { waitUntil: 'networkidle' });
   const planInfo = await page.evaluate(() => {
     const u = LS.store.current();
     const nodes = LS.allNodes('python');
@@ -30,7 +32,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
     };
   });
 
-  await page.goto('http://localhost:8123/index.html?demo=1#/battle/python/py-12-3', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/battle/python/py-12-3', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3600);
   if (await page.locator('.dlg-overlay').count()) {
     await page.locator('#dlg-skip').click({ force: true });
@@ -81,7 +83,7 @@ const { chromium } = require('C:/Users/hyyzj/AppData/Local/npm-cache/_npx/e41f20
   });
   await page.screenshot({ path: 'shot-boss-reward.png', fullPage: false });
 
-  await page.goto('http://localhost:8123/index.html?demo=1#/forge', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:8123/index.html#/forge', { waitUntil: 'networkidle' });
   await page.waitForTimeout(900);
   const forgeAfter = await page.evaluate(() => {
     const rows = [...document.querySelectorAll('.acq-lang-row')];

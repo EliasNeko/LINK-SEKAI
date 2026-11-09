@@ -46,6 +46,7 @@
               <input class="input" type="password" name="password" maxlength="64" placeholder="至少 6 位" required>
             </div>
             <button class="btn btn-lg btn-block" type="submit">推开星门 ${LS.icon('arrow', 15)}</button>
+            <div class="auth-note"><span class="dot"></span><span>每位旅人只能登录自己的账号。还没有账号？先新建一枚星印。</span></div>
           </form>
           <form class="auth-form hidden" id="register-form" autocomplete="off">
             <div class="field-row">
@@ -71,9 +72,7 @@
               ? '注册后，账号与进度会实时保存在云端；换一台设备登录也能继续。网络暂时中断时仍可先用本机缓存游玩。'
               : '账号、进度、好友与装备均保存在本机浏览器。清理浏览器数据会同时清除存档，请自行备份。'}</span></div>
           </form>
-          <div class="demo-row">或试用演示档案</div>
-          <button class="demo-btn" id="demo-login" type="button">${LS.icon('play', 12)} 以「星野·澪」进入演示星海</button>
-          <div class="auth-foot">LINK-SEKAI · A LOCAL-FIRST PROGRAMMING ADVENTURE</div>
+          <div class="auth-foot">LINK-SEKAI · AN OPEN-SOURCE PROGRAMMING ADVENTURE</div>
         </div>
       </section>
     </div>`;
@@ -129,12 +128,6 @@
         showErr(ex.message || '注册失败。');
         btn.disabled = false;
       }
-    });
-
-    root.querySelector('#demo-login').addEventListener('click', () => {
-      const user = LS.store.loginDemo();
-      LS.toast('演示星门已开启', '你正以「' + user.gameName + '」的身份体验', 'gold', 'play');
-      LS.app.go('#/');
     });
   }
 
