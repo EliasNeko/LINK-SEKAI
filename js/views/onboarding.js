@@ -177,12 +177,13 @@ function stepFinish() {
         u.activeLangs = state.langs.slice();
         u.primaryLang = state.primary;
         u.onboardingDone = true;
+        u.tutorialDone = false;
         if (!u.inspiration) u.inspiration = 3;
         LS.store.save();
         LS.syncTitles(u);
         LS.toast('星印已刻下', '欢迎来到 Link-Sekai，' + name, 'gold', 'spark');
         LS.confetti({ colors: ['#e6c98d', '#f0e3c8', '#8b3a4a', '#4f8c80'] });
-        LS.app.go('#/');
+        LS.app.go('#/tutorial');
       });
     }
 

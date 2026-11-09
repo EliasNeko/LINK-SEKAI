@@ -105,7 +105,7 @@
       try {
         const user = await LS.store.login(fd.get('login'), fd.get('password'));
         LS.toast('星门已开启', '欢迎回来，' + user.gameName, 'gold', 'spark');
-        LS.app.go(user.onboardingDone ? '#/' : '#/onboarding');
+        LS.app.go(!user.onboardingDone ? '#/onboarding' : (!user.tutorialDone ? '#/tutorial' : '#/'));
       } catch (ex) {
         showErr(ex.message || '登录失败。');
         btn.disabled = false;

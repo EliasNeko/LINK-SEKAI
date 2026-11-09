@@ -46,6 +46,9 @@
         changed = true;
       }
       if (!u.xp || typeof u.xp !== 'number') { u.xp = Number(u.xp) || 0; changed = true; }
+      /* v2.7 新手引导：老账号视为已完成，避免登录后被强行拉回教程。 */
+      if (u.tutorialDone === undefined) { u.tutorialDone = !!u.onboardingDone; changed = true; }
+      if (u.tutorialReward === undefined) { u.tutorialReward = !!u.tutorialDone; changed = true; }
       /* v2 装备：不再全局四槽，而是每个职业语言一套 武器/服饰/道具 三栏。 */
       u.equipment.forEach(e => {
         if (!e.cat) { e.cat = CAT_MAP[e.slot] || 'item'; changed = true; }
@@ -97,6 +100,9 @@
       if (u.stats.perfectWins == null) { u.stats.perfectWins = 0; changed = true; }
       if (typeof u.cloudAccount !== 'boolean') { u.cloudAccount = false; changed = true; }
       if (!Number.isSafeInteger(u.cloudVersion) || u.cloudVersion < 0) { u.cloudVersion = 0; changed = true; }
+      if (!('avatarId' in u)) { u.avatarId = null; changed = true; }
+      if (!u.frame) { u.frame = 'none'; changed = true; }
+      if (!('banner' in u)) { u.banner = null; changed = true; }
       return changed;
     },
     save() {
@@ -152,6 +158,9 @@
         passHash: data.passHash || '',
         gameName: data.gameName,
         avatar: data.avatar || null,
+        avatarId: data.avatarId || null,
+        frame: data.frame || 'none',
+        banner: data.banner || null,
         isNPC: !!data.isNPC,
         bio: data.bio || '这个旅人还没有写下自己的星海签名。',
         createdAt: data.createdAt || new Date().toISOString(),
@@ -160,6 +169,8 @@
         primaryLang: null,
         activeLangs: [],
         onboardingDone: false,
+        tutorialDone: false,
+        tutorialReward: false,
         progress: {},
         xp: 0,
         coins: data.coins != null ? data.coins : 160,
@@ -403,7 +414,8 @@
 
     hintCount(user, langId) {
       const s = this.gearStats(user, langId);
-      return Math.min(8, 1 + (s.hint || 0));
+      const aw = LS.awaken ? LS.awaken.hintOf(user, langId) : 0;
+      return Math.min(8, 1 + (s.hint || 0) + aw);
     },
 
     addFriend(user, targetUid, remark) {

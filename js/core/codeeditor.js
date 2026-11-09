@@ -211,7 +211,7 @@
       <div class="ce">
         <div class="ce-top">
           <span class="ce-lang"><i></i>${esc(opts.title || (lang + ' · main'))}</span>
-          <span class="ce-keyhint">Tab 补全 · Ctrl+Enter 攻击</span>
+          <span class="ce-keyhint">${esc(opts.keyHint || 'Tab 补全 · Ctrl+Enter 攻击')}</span>
         </div>
         <div class="ce-body">
           <div class="ce-gutter" aria-hidden="true"></div>

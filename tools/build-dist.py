@@ -25,6 +25,8 @@ def target_size(path):
         if base.startswith('npc_'):
             return 1200, 84
         return 1400, 84
+    if rel.startswith('assets/avatars'):
+        return 512, 88
     if rel.startswith('assets/items'):
         return 256, 88
     if rel.startswith('assets/ui'):

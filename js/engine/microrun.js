@@ -172,20 +172,27 @@
   /* ---------------- Python ---------------- */
 
   function pyExpr(expr) {
-    let out = '';
-    let inS = false, q = '';
+    // 先把字符串字面量整体取出占位，避免 True/False/print 等替换误伤引号里的内容。
+    const strings = [];
+    let masked = '';
     for (let i = 0; i < expr.length; i++) {
       const ch = expr[i];
-      if (inS) {
-        out += ch;
-        if (ch === '\\') { out += expr[++i] || ''; continue; }
-        if (ch === q) inS = false;
+      if (ch === '"' || ch === "'") {
+        let lit = ch;
+        let j = i + 1;
+        for (; j < expr.length; j++) {
+          const c = expr[j];
+          lit += c;
+          if (c === '\\') { lit += expr[++j] || ''; continue; }
+          if (c === ch) break;
+        }
+        i = j;
+        masked += '\u0001' + (strings.push(lit) - 1) + '\u0001';
         continue;
       }
-      if (ch === '"' || ch === "'") { inS = true; q = ch; out += ch; continue; }
-      out += ch;
+      masked += ch;
     }
-    out = out
+    let out = masked
       .replace(/\bTrue\b/g, 'true')
       .replace(/\bFalse\b/g, 'false')
       .replace(/\bNone\b/g, 'null')
@@ -211,7 +218,7 @@
     out = out.replace(/([A-Za-z_]\w*)\[(-1)\]/g, '$1[$1.length-1]');
     // simple floor division a // b
     out = out.replace(/([A-Za-z0-9_\.\)\]]+)\s*\/\/\s*([A-Za-z0-9_\(]+)/g, 'Math.floor($1 / $2)');
-    return out;
+    return out.replace(/\u0001(\d+)\u0001/g, (m, n) => strings[+n]);
   }
 
   function translatePython(src) {
@@ -621,22 +628,39 @@
       else if (lang === 'javascript') js = translateJs(code);
       else throw new Error('暂不支持的语言：' + lang);
     } catch (e) {
-      return { ok: false, output: out.join(''), error: '无法解析代码：' + e.message, ms: Date.now() - startedAt, lang, js: '' };
+      return {
+        ok: false, output: out.join(''),
+        error: '无法解析代码：' + e.message,
+        errorEn: 'SyntaxError: could not parse source — ' + e.message,
+        ms: Date.now() - startedAt, lang, js: ''
+      };
     }
 
     try {
       const header = '"use strict";\nconst {' + HELPER_NAMES.join(', ') + '} = __H;\n';
       const fn = new Function('__H', header + js);
       fn(H);
-      return { ok: true, output: out.join(''), error: null, ms: Date.now() - startedAt, lang, js };
+      return { ok: true, output: out.join(''), error: null, errorEn: null, ms: Date.now() - startedAt, lang, js };
     } catch (e) {
       let msg = e && e.message ? e.message : String(e);
-      if (msg === '__LOOP_LIMIT__') msg = '循环步数超过上限，可能存在死循环。';
-      else if (msg === '__NO_INPUT__') msg = '教学终端不支持交互输入，请使用固定数据。';
-      else if (e instanceof SyntaxError) msg = '语法错误：' + friendlySyntax(msg);
-      else if (e instanceof ReferenceError) msg = '运行错误：使用了未定义的名字（' + msg + '）';
-      else if (e instanceof TypeError) msg = '运行错误：类型不匹配（' + msg + '）';
-      return { ok: false, output: out.join(''), error: msg, ms: Date.now() - startedAt, lang, js };
+      let msgEn = msg;
+      if (msg === '__LOOP_LIMIT__') {
+        msg = '循环步数超过上限，可能存在死循环。';
+        msgEn = 'RuntimeError: loop step limit exceeded (possible infinite loop).';
+      } else if (msg === '__NO_INPUT__') {
+        msg = '教学终端不支持交互输入，请使用固定数据。';
+        msgEn = 'RuntimeError: interactive input is not supported in the training terminal.';
+      } else if (e instanceof SyntaxError) {
+        msg = '语法错误：' + friendlySyntax(msg);
+        msgEn = 'SyntaxError: ' + msgEn;
+      } else if (e instanceof ReferenceError) {
+        msg = '运行错误：使用了未定义的名字（' + msg + '）';
+        msgEn = 'NameError: name is not defined — ' + msgEn;
+      } else if (e instanceof TypeError) {
+        msg = '运行错误：类型不匹配（' + msg + '）';
+        msgEn = 'TypeError: unsupported operation or call — ' + msgEn;
+      }
+      return { ok: false, output: out.join(''), error: msg, errorEn: msgEn, ms: Date.now() - startedAt, lang, js };
     }
   }
 

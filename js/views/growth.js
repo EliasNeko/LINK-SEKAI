@@ -360,7 +360,15 @@
           <div class="prof-stages">
             ${LS.PROF_STAGES.map(s => `<span class="ps-pip ${stage >= s.stage ? 'on' : ''}" title="${LS.esc(s.name)} · ${LS.esc(s.note)}">${s.stage === 0 ? '初' : s.stage}</span>`).join('<i></i>')}
           </div>
+          ${LS.awaken ? `<div class="prof-awaken">
+            <div class="pa-head"><span>觉醒加成 · BONUS</span><em>${stage === 0 ? '初始数值' : '阶段 ' + stage + ' 累计'}</em></div>
+            <div class="awk-line">${LS.awaken.line(LS.awaken.bonusOf(l.id, stage))}</div>
+          </div>` : ''}
           <div class="prof-next">${nextStage ? `距 ${nextStage.name} 还需 <b>${Math.max(0, nextStage.min - prof.score)}</b> 熟练度` : '已达到第三阶段 · 源核同调'}</div>
+          <div class="prof-tools">
+            ${LS.awaken ? `<button class="btn btn-xs btn-ghost" data-awaken-info="${LS.esc(l.id)}">${LS.icon('search', 11)} 数值说明</button>
+            <button class="btn btn-xs btn-ghost" data-awaken-preview="${LS.esc(l.id)}">${LS.icon('user', 11)} 阶段剪影</button>` : ''}
+          </div>
           <div class="prof-foot">
             <span>${prof.done}/${prof.total} 节点 · ${prof.bossWins}/${prof.bosses} BOSS</span>
             ${active ? `<a class="btn btn-sm btn-ghost" href="#/world/${l.id}">查看星轨 ${LS.icon('arrow', 11)}</a>` : `<a class="btn btn-sm btn-ghost" href="#/world">点亮星轨</a>`}
@@ -385,8 +393,17 @@
     </div>`;
   }
 
+  function bindProficiency(root) {
+    root.querySelectorAll('[data-awaken-info]').forEach(b => b.addEventListener('click', () => {
+      if (LS.awaken) LS.awaken.openInfo(LS.store.current(), b.dataset.awakenInfo);
+    }));
+    root.querySelectorAll('[data-awaken-preview]').forEach(b => b.addEventListener('click', () => {
+      if (LS.awaken) LS.awaken.openPreview(LS.store.current(), b.dataset.awakenPreview);
+    }));
+  }
+
   LS.Views.daily = { html: () => ({ html: dailyHTML(), title: '每日委托', sub: 'DAILY MISSIONS' }), mount: bindDaily };
   LS.Views.levels = { html: () => ({ html: levelsHTML(), title: '等级殿堂', sub: 'LEVEL HALL' }), mount: bindLevels };
   LS.Views.shop = { html: () => ({ html: shopHTML(), title: '星辉商店', sub: 'STARLIGHT EMPORIUM' }), mount: bindShop };
-  LS.Views.proficiency = { html: () => ({ html: proficiencyHTML(), title: '职业熟练度', sub: 'PROFICIENCY' }), mount() { } };
+  LS.Views.proficiency = { html: () => ({ html: proficiencyHTML(), title: '职业熟练度', sub: 'PROFICIENCY' }), mount: bindProficiency };
 })(window.LS);

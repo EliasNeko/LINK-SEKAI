@@ -16,6 +16,8 @@ async function seedProgress(page) {
     const u = LS.store.current();
     if (!u) return;
     u.onboardingDone = true;
+    u.tutorialDone = true;
+    u.tutorialReward = true;
     u.primaryLang = 'python';
     u.activeLangs = Array.from(new Set([].concat(u.activeLangs || [], ['python', 'javascript'])));
     u.char = u.char || {

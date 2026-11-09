@@ -356,16 +356,27 @@
 
     const spec = waveSpec(chapterIndex, bigBoss, chapter);
     const requiredBoss = Math.max(1, Math.min(3, authored.length));
+    const hasMust = q => !!(q && q.must && q.must.re);
+    // 带「咒式要求」的题留给精英与 BOSS；小怪只用暗号、示例这类轻题。
+    const strong = [];
+    filler = filler.filter(q => {
+      if (hasMust(q)) { strong.push(q); return false; }
+      return true;
+    });
 
+    let available = filler.length + strong.length + authored.length;
     // 池子不够时先从前面章节借复习题，再决定要不要压缩波次，避免明明能借到题却只剩一只小怪。
-    if (specTotal(spec) > filler.length + authored.length) {
-      const need = specTotal(spec) - filler.length - authored.length;
-      filler = filler.concat(reviewTasks(lang, chapterIndex, seen, need + 2));
+    if (specTotal(spec) > available) {
+      const need = specTotal(spec) - available;
+      reviewTasks(lang, chapterIndex, seen, need + 2).forEach(q => {
+        if (hasMust(q)) strong.push(q); else filler.push(q);
+      });
+      available = filler.length + strong.length + authored.length;
     }
-    trimSpec(spec, requiredBoss, filler.length + authored.length);
+    trimSpec(spec, requiredBoss, available);
 
     // 最后一层保险：允许极少数早期章节减少到 1 小怪 + 1 精英 + BOSS。
-    while (specTotal(spec) > filler.length + authored.length && (spec.minions > 1 || spec.eliteHits > 1)) {
+    while (specTotal(spec) > available && (spec.minions > 1 || spec.eliteHits > 1)) {
       if (spec.minions > 1) spec.minions--;
       else if (spec.eliteHits > 1) spec.eliteHits--;
     }
@@ -396,27 +407,36 @@
       lore: node.enemy.lore || ''
     });
 
-    // 分题：BOSS 的最后几题一定是本章原题；其余位置先放变体、示例和暗号。
+    // 分题：小怪只出暗号/示例这类轻题；精英与 BOSS 必须出带「咒式要求」的题，逼玩家用本章语法。
     const reservedBoss = authored.slice(0, Math.max(1, Math.min(authored.length, waves[waves.length - 1].hits)));
     const flat = [];
-    let f = 0;
+    const fillerPool = filler.slice();
+    const strongPool = strong.slice();
+    const takeFrom = (pool, count) => pool.splice(0, Math.max(0, count));
     waves.forEach((w, wi) => {
       const count = w.hits;
-      let questions;
+      let questions = [];
       if (w.type === 'boss') {
         const pre = Math.max(0, count - reservedBoss.length);
-        const preQs = filler.slice(f, f + pre); f += preQs.length;
-        questions = preQs.concat(reservedBoss.slice(0, count));
-        while (questions.length < count) {
-          // 极端情况下复用一道题，保证波次完整；正常数据不会走到这里。
-          questions.push(filler[f % Math.max(1, filler.length)] || authored[0]);
-        }
+        questions = takeFrom(strongPool, pre);
+        if (questions.length < pre) questions = questions.concat(takeFrom(fillerPool, pre - questions.length));
+        questions = questions.concat(reservedBoss.slice(0, count));
+      } else if (w.type === 'elite') {
+        questions = takeFrom(strongPool, count);
+        if (questions.length < count) questions = questions.concat(takeFrom(fillerPool, count - questions.length));
       } else {
-        questions = filler.slice(f, f + count);
-        f += questions.length;
-        while (questions.length < count) {
-          questions.push(filler[f % Math.max(1, filler.length)] || authored[0]);
+        questions = takeFrom(fillerPool, count);
+        if (questions.length < count) {
+          // 小怪宁可重复暗号，也不塞「咒式要求」题，保持前期轻量。
+          const reuse = filler.length ? filler : strong;
+          while (questions.length < count && reuse.length) {
+            questions.push(reuse[questions.length % reuse.length]);
+          }
         }
+      }
+      while (questions.length < count) {
+        // 极端情况下复用一道题，保证波次完整；正常数据不会走到这里。
+        questions.push(authored[0]);
       }
       questions.forEach((q, qi) => {
         flat.push(Object.assign({}, q, {

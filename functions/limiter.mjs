@@ -8,6 +8,7 @@ import { AppError, rows } from './http.mjs';
 export const LIMITS = {
   login: { maxAttempts: 12, windowMs: 15 * 60 * 1000 },
   register: { maxAttempts: 5, windowMs: 60 * 60 * 1000 },
+  social: { maxAttempts: 60, windowMs: 10 * 60 * 1000 },
 };
 
 // 只在「确认未生效」时重试（谓词不匹配 = 本次写入没有生效）。

@@ -50,6 +50,11 @@ async function closeAnnouncement(page) {
     await page.click('#begin-journey');
     await page.waitForTimeout(1800);
   }
+  // v2.7：新账号会先进入新手引导，验收账号门槛时跳过后再检查大厅。
+  if (await page.locator('.tut-page').count()) {
+    await page.locator('[data-skip]').first().click();
+    await page.waitForTimeout(900);
+  }
   const hubText = await page.locator('body').innerText();
   console.log('own account in game:', /门槛旅人/.test(hubText) ? 'ok' : 'MISSING');
 

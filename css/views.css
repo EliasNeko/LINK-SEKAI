@@ -2674,6 +2674,74 @@ pre.code-block, .code-block-wrap pre.code-block {
   background: rgba(255, 250, 238, .35);
 }
 .task-badge.is-fail { color: #8b3a4a; border-color: rgba(139, 58, 74, .34); background: rgba(139, 58, 74, .06); }
+.task-badge.is-spell {
+  color: #8f1f2c;
+  border-color: rgba(163, 43, 58, .48);
+  background: linear-gradient(180deg, rgba(196, 74, 88, .18), rgba(150, 40, 52, .07));
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.spell-req {
+  position: relative;
+  margin-top: 9px;
+  padding: 9px 12px 10px;
+  border: 1px solid rgba(163, 43, 58, .34);
+  border-radius: 7px;
+  background: linear-gradient(135deg, rgba(196, 74, 88, .1), rgba(255, 248, 234, .55));
+  box-shadow: inset 3px 0 0 #a32b3a, 0 2px 10px rgba(163, 43, 58, .08);
+  animation: spellReqIn .32s ease-out;
+}
+.sr-head { display: flex; align-items: center; gap: 6px; }
+.sr-rune { display: flex; color: #a32b3a; filter: drop-shadow(0 0 5px rgba(196, 74, 88, .45)); }
+.sr-kicker { font-family: var(--font-display); font-size: 7.5px; letter-spacing: .18em; color: #a32b3a; }
+.sr-text {
+  margin: 4px 0 0;
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.55;
+  color: #5c1a23;
+}
+.sr-warn { margin-top: 3px; font-size: 8.5px; line-height: 1.5; color: #8a5648; }
+.spell-req.is-compact {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  padding: 4px 9px;
+  border-radius: 5px;
+  box-shadow: inset 2px 0 0 #a32b3a;
+  animation: none;
+}
+.spell-req.is-compact .sr-tag {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #a32b3a;
+  color: #fff3e2;
+  font-family: var(--font-display);
+  font-size: 7.5px;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+.spell-req.is-compact .sr-text {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #6b1f28;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@keyframes spellReqIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .duel-page .task-pips { padding-top: 7px; flex: 0 0 auto; }
 .duel-page .task-pips i { width: 15px; height: 4px; }
 .task-req-body { flex: 1; min-width: 0; }
@@ -2717,6 +2785,37 @@ pre.code-block, .code-block-wrap pre.code-block {
 .term-outcome b { flex: 0 0 auto; font-family: var(--font-display); font-size: 8px; letter-spacing: .12em; }
 .term-outcome.ok { border: 1px solid rgba(121, 227, 168, .26); background: rgba(121, 227, 168, .06); color: #a9d9b8; }
 .term-outcome.bad { border: 1px solid rgba(216, 120, 135, .3); background: rgba(216, 120, 135, .06); color: #e0a4ae; }
+.term-outcome.warn { border: 1px solid rgba(232, 194, 122, .36); background: rgba(232, 194, 122, .08); color: #eed7a8; }
+.term-line.is-block { color: #e8c27a; }
+.term-spell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px solid rgba(232, 194, 122, .42);
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(232, 194, 122, .15), rgba(232, 194, 122, .03));
+  box-shadow: inset 2px 0 0 #d8b274;
+}
+.term-spell span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-size: 7.5px;
+  letter-spacing: .14em;
+  color: #d8b274;
+}
+.term-spell b {
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: .02em;
+  color: #ffe4b0;
+  text-shadow: 0 0 12px rgba(232, 194, 122, .38);
+}
 .term-errbox { display: grid; gap: 5px; margin-top: 7px; padding: 8px 10px; border: 1px solid rgba(216, 120, 135, .2); border-radius: 5px; background: rgba(216, 120, 135, .035); }
 .te-row { display: flex; align-items: flex-start; gap: 8px; }
 .te-tag { flex: 0 0 auto; margin-top: 1px; padding: 1px 4px; border: 1px solid rgba(216, 120, 135, .3); border-radius: 2px; color: #d78f9c; font-family: var(--font-display); font-size: 6.5px; letter-spacing: .12em; }
@@ -3065,6 +3164,9 @@ pre.code-block, .code-block-wrap pre.code-block {
   .player-aura, .enemy-aura { width: 126px; height: 126px; bottom: 6px; }
   .duel-page .task-card { padding: 14px; }
   .duel-page .task-top h2 { font-size: 16px; }
+  .spell-req.is-compact { align-items: flex-start; }
+  .spell-req.is-compact .sr-tag { margin-top: 1px; }
+  .spell-req.is-compact .sr-text { white-space: normal; }
   .task-expected { font-size: 10px; }
   .duel-editor-foot { flex-direction: column; align-items: stretch; }
   .duel-editor-foot .ed-actions { justify-content: flex-end; flex-wrap: wrap; }

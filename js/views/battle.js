@@ -122,7 +122,7 @@
       waveHp: {},
       qIndex: 0, failCount: 0, failByQ: {},
       hintsShown: 0, hintQ: 0, hintsUsed: false,
-      guardLeft: (gearStatsOf(u, langId).guard || 0),
+      guardLeft: (combatStatsOf(u, langId).guard || 0),
       dead: false, defeatRecorded: false, defeatModalOpen: false,
       won: false, clearedNow: false, victoryRecorded: false, victoryInfo: null,
       replay: false, resumed: false,
@@ -168,9 +168,31 @@
   function qNow(st) { return qAt(st, st.qIndex); }
   function waveNow(st) { return st.plan.waves[qNow(st).waveIndex]; }
   function gearStatsOf(u, langId) { return LS.store.gearStats ? LS.store.gearStats(u, langId) : (LS.emptyStats ? LS.emptyStats() : {}); }
-  function playerMaxOf(u, langId) { return 100 + Math.round((gearStatsOf(u, langId).def || 0) * .9); }
+  /* 觉醒数值与装备叠加：职业基础 + 当前阶段加成 + 三栏装备。 */
+  function awakenStatsOf(u, langId) {
+    if (!LS.awaken) return {};
+    const stage = LS.awaken.stageOf(u, langId);
+    const total = LS.awaken.totalOf(langId, stage);
+    total.stage = stage;
+    return total;
+  }
+  function combatStatsOf(u, langId) {
+    const gear = gearStatsOf(u, langId);
+    const aw = awakenStatsOf(u, langId);
+    const out = {};
+    LS.STAT_KEYS.forEach(k => { out[k] = (Number(gear[k]) || 0) + (Number(aw[k]) || 0); });
+    out.hint = Math.min(8, out.hint || 0);
+    out.ghost = Math.min(6, out.ghost || 0);
+    out.guard = Math.min(8, out.guard || 0);
+    out.stage = aw.stage || 0;
+    return out;
+  }
+  function playerMaxOf(u, langId) {
+    const c = combatStatsOf(u, langId);
+    return 100 + Math.round((c.def || 0) * .9) + Math.max(0, awakenStatsOf(u, langId).hp || 0);
+  }
   function counterOf(u, w, langId) {
-    const def = gearStatsOf(u, langId).def || 0;
+    const def = combatStatsOf(u, langId).def || 0;
     return Math.max(2, Math.round((Number(w.damage) || 12) * 100 / (100 + def)));
   }
   function waveMax(st, wi) { return (st.plan.waves[wi].hits || 1) * 100; }
@@ -225,8 +247,10 @@
     const trinket = slotItemOf(u, 'item', lang.id);
     const weaponStyle = LS.weaponStyleFor(lang.id, lang.professionStyle);
     const stats = gearStatsOf(u, lang.id);
+    const awaken = awakenStatsOf(u, lang.id);
+    const combat = combatStatsOf(u, lang.id);
     return {
-      weapon, armor: apparel, relic: trinket, charm: null, stats,
+      weapon, armor: apparel, relic: trinket, charm: null, stats, awaken, combat,
       weaponStyle,
       weaponQuality: weapon ? weapon.quality : 'common',
       weaponInfusion: weapon ? (weapon.infusion || 0) : 0,
@@ -235,8 +259,10 @@
       relicLabel: trinket ? trinket.name : '无道具',
       charmLabel: '',
       hintMax: LS.store.hintCount ? LS.store.hintCount(u, lang.id) : 1,
-      atk: stats.atk || 0,
-      def: stats.def || 0
+      atk: combat.atk || 0,
+      def: combat.def || 0,
+      hp: awaken.hp || 0,
+      stage: awaken.stage || 0
     };
   }
 
@@ -296,7 +322,7 @@
           <div class="duel-plate player-plate">
             <div class="dp-top"><span class="dp-role">YOU</span><b>${LS.esc(u.gameName)}</b><span class="dp-lv">Lv.${lv}</span></div>
             <div class="duel-hp player"><i id="player-hp-bar" style="width:${Math.max(0, state.playerHp / state.playerMax * 100)}%"></i></div>
-            <div class="dp-num" id="player-hp-text">${Math.max(0, state.playerHp)} / ${state.playerMax} · 攻 +${gear.atk} / 防 +${gear.def}</div>
+            <div class="dp-num" id="player-hp-text">${Math.max(0, state.playerHp)} / ${state.playerMax} · 攻 +${gear.atk} / 防 +${gear.def} / 觉醒 HP +${gear.hp || 0}</div>
           </div>
           <div class="duel-figure">
             <div class="fighter-shadow"></div>
@@ -345,12 +371,26 @@
       <div class="duel-watermark-cover" aria-hidden="true"></div>`;
   }
 
+  function spellReqHTML(q, compact) {
+    if (!q.must || !q.must.re) return '';
+    const text = q.must.text || '必须使用题目指定的写法';
+    if (compact) {
+      return `<div class="spell-req is-compact"><span class="sr-tag">${LS.icon('wand', 10)} 咒式</span><span class="sr-text">${LS.esc(text)}</span></div>`;
+    }
+    return `<div class="spell-req">
+      <div class="sr-head"><span class="sr-rune">${LS.icon('wand', 13)}</span><span class="sr-kicker">REQUIRED SYNTAX · 咒式约束</span></div>
+      <p class="sr-text">${LS.esc(text)}</p>
+      <p class="sr-warn">不按咒式出招，攻击会被敌人格挡，并被反击。</p>
+    </div>`;
+  }
+
   function taskCardInner(state, node, compact) {
     const q = qNow(state);
     const w = waveNow(state);
     const fails = Number(state.failByQ[q.qIndex]) || 0;
     const kind = KIND_LABEL[q.kind] || '试炼';
     const filled = q.waveHit - 1;
+    const spellBadge = (q.must && q.must.re) ? '<span class="task-badge is-spell">咒式</span>' : '';
     if (compact) {
       return `<div class="task-card paper duel-mission corner-mark">
         <div class="mission-left">
@@ -359,11 +399,13 @@
             <h2>攻击指令 · ${LS.esc(w.name)}</h2>
             <div class="task-badges">
               <span class="task-badge">${LS.esc(kind)}</span>
+              ${spellBadge}
               ${q.reviewChapter ? `<span class="task-badge">复习 · ${LS.esc(q.reviewChapter)}</span>` : ''}
               ${fails ? `<span class="task-badge is-fail">本题失误 ${fails}</span>` : ''}
             </div>
           </div>
           <p class="task-prompt">${LS.esc(q.prompt)}</p>
+          ${spellReqHTML(q, true)}
         </div>
         <div class="mission-target">
           <b>让终端输出</b>
@@ -379,6 +421,7 @@
           <h2>攻击指令 · ${LS.esc(w.name)}</h2>
           <div class="task-badges">
             <span class="task-badge">${LS.esc(kind)}</span>
+            ${spellBadge}
             ${q.reviewChapter ? `<span class="task-badge">复习 · ${LS.esc(q.reviewChapter)}</span>` : ''}
             ${fails ? `<span class="task-badge is-fail">本题失误 ${fails}</span>` : ''}
           </div>
@@ -386,6 +429,7 @@
         <div class="task-pips" title="本波命中进度">${pipsHTML(q.waveHits, filled, q.waveHit - 1)}</div>
       </div>
       <p class="task-prompt">${LS.esc(q.prompt)}</p>
+      ${spellReqHTML(q, false)}
       <div class="task-req">
         <span>${LS.icon('target', 13)}</span>
         <div class="task-req-body">
@@ -435,15 +479,54 @@
     return LS.explainError ? LS.explainError(langId, raw, code).zh : '代码没有通过执行。从出错的位置开始检查括号、引号、缩进和变量名。';
   }
 
-  function failureInfo(langId, q, res, mustOk, code) {
+  /* 只保留真正参与执行的代码结构：去掉注释、清空字符串内容，避免用 print("for") 或注释骗过咒式检查。 */
+  function mustScanCode(src, langId) {
+    let out = '';
+    let i = 0, q = null, line = false, block = false;
+    while (i < src.length) {
+      const ch = src[i], nx = src[i + 1];
+      if (line) {
+        if (ch === '\n') { line = false; out += ch; }
+        i++;
+        continue;
+      }
+      if (block) {
+        if (ch === '*' && nx === '/') { block = false; i += 2; } else i++;
+        continue;
+      }
+      if (q) {
+        if (ch === '\\') { i += 2; continue; }
+        if (ch === q) { q = null; out += ch; }
+        i++;
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === '`') { q = ch; out += ch; i++; continue; }
+      if (ch === '/' && nx === '/') { line = true; i += 2; continue; }
+      if (ch === '/' && nx === '*') { block = true; i += 2; continue; }
+      if (ch === '#' && langId === 'python') { line = true; i++; continue; }
+      out += ch;
+      i++;
+    }
+    return out;
+  }
+
+  function failureInfo(langId, q, res, mustOk, code, blocked) {
     if (!res.ok) {
       const raw = res.error || '代码无法执行。';
       return { en: englishError(raw), zh: chineseError(langId, raw, code), raw: String(raw) };
     }
     if (!mustOk) {
+      const req = (q.must && q.must.text) ? q.must.text : '题目指定的写法（循环、函数或指定语法）';
+      if (blocked) {
+        return {
+          en: 'StructureRequirementError: required code structure is missing — the attack was blocked.',
+          zh: '咒式未命中：输出虽然正确，但没有满足咒式要求——' + req + '。敌人看穿了这次捷径，挡下了攻击。',
+          raw: ''
+        };
+      }
       return {
-        en: 'StructureRequirement: the required code structure is missing.',
-        zh: (q.must && q.must.text) ? q.must.text : '代码能运行，但缺少题目要求的写法（循环、函数或指定语法）。',
+        en: 'StructureRequirementError: the required code structure is missing.',
+        zh: '代码能运行，但缺少题目要求的写法：' + req + '。',
         raw: ''
       };
     }
@@ -480,8 +563,14 @@
         </div>`;
     }
     if (t.kind === 'fail') {
-      let html = `<div class="term-line is-err"><span class="tl-prompt">$ attack</span> 攻击落空 · 敌人开始反击</div>
-        <div class="term-errbox">
+      const blocked = !!t.blocked;
+      let html = blocked
+        ? `<div class="term-line is-block"><span class="tl-prompt">$ attack</span> 攻击被格挡 · 咒式未命中（输出正确，但敌人识破了你的捷径）</div>`
+        : `<div class="term-line is-err"><span class="tl-prompt">$ attack</span> 攻击落空 · 敌人开始反击</div>`;
+      if (blocked && t.mustText) {
+        html += `<div class="term-spell"><span>${LS.icon('wand', 12)} 必须使用</span><b>${LS.esc(t.mustText)}</b></div>`;
+      }
+      html += `<div class="term-errbox">
           <div class="te-row"><span class="te-tag">EN</span><code>${LS.esc(t.en || 'RuntimeError: code failed to execute.')}</code></div>
           <div class="te-row zh"><span class="te-tag">中文</span><p>${LS.esc(t.zh || '代码没有通过。')}</p></div>
           ${t.raw ? `<div class="te-row raw"><span class="te-tag">终端</span><code>${LS.esc(t.raw)}</code></div>` : ''}
@@ -495,7 +584,9 @@
       if (t.diff) html += `<div class="term-why">第一个差异：${LS.esc(t.diff)}</div>`;
       html += t.guarded
         ? `<div class="term-outcome good"><b>护盾抵消</b><span>本次失误不受到反击伤害 · 剩余护盾 ${state.guardLeft || 0} 次</span></div>`
-        : `<div class="term-outcome bad"><b>反击命中</b><span>−${t.damage} HP · 玩家剩余 ${Math.max(0, state.playerHp)} / ${state.playerMax}</span></div>`;
+        : blocked
+          ? `<div class="term-outcome warn"><b>格挡反击</b><span>−${t.damage} HP（${t.blockRatio >= 1 ? 'BOSS 全额反击' : '被挡下，反击伤害减弱'}） · 玩家剩余 ${Math.max(0, state.playerHp)} / ${state.playerMax}</span></div>`
+          : `<div class="term-outcome bad"><b>反击命中</b><span>−${t.damage} HP · 玩家剩余 ${Math.max(0, state.playerHp)} / ${state.playerMax}</span></div>`;
       return html;
     }
     return '';
@@ -575,6 +666,12 @@
           ${['hint', 'ghost', 'guard'].filter(k => gear.stats[k]).map(k => `<span><em>${LS.STAT_LABEL[k]}</em><b>+${gear.stats[k]}${LS.STAT_UNIT[k] || ''}</b></span>`).join('')}
         </div>
       </div>
+      <div class="gear-total gear-awaken">
+        <div class="gt-head"><span>觉醒合计 · AWAKENED</span><button class="gt-info" data-awaken-info="${LS.esc(lang.id)}" type="button">${LS.icon('book', 11)} 数值说明</button></div>
+        <div class="gt-chips">
+          ${LS.awaken ? LS.awaken.line(gear.awaken) : ''}
+        </div>
+      </div>
       <div class="gear-battle">
         <div><span>剩余护盾</span><b>${state.guardLeft || 0} 次失误</b></div>
         <div><span>本题提示</span><b>${state.hintsShown || 0} / ${Math.min(gear.hintMax, (q.hints || []).length)} 条</b></div>
@@ -608,6 +705,7 @@
       <div class="kicker-jp">RULE · 战斗规则</div>
       <p>· 没有运行 / 检查按钮，写错也会直接承受反击。</p>
       <p>· 输出完全一致才算命中；命中后敌人沉默一回合。</p>
+      <p>· 带「咒式约束」的敌人会检查写法：输出对了但没用指定语法，攻击会被格挡。</p>
       <p>· 生命归零则本关失败，离开页面不会回满生命。</p>
     </div>`;
   }
@@ -1011,7 +1109,7 @@
           const chapterIndex = Math.max(0, (lang.chapters || []).indexOf(hit.chapter));
           const wv = waveNow(st);
           const first = !LS.store.progressOf(u2, langId).done.includes(node2.id);
-          const gs = gearStatsOf(u2, langId);
+          const gs = combatStatsOf(u2, langId);
           const reward = LS.battleReward ? LS.battleReward(u2, node2, chapterIndex) : { xp: node2.xp || 0, coins: 0 };
           let lootItem = null;
           let unlocked = [];
@@ -1106,17 +1204,20 @@
           const expected = LS.normalizeOut(q.expected);
           let mustOk = true;
           if (q.must && q.must.re) {
-            try { mustOk = new RegExp(q.must.re, 'm').test(st.code); } catch (e) { mustOk = true; }
+            try { mustOk = new RegExp(q.must.re, 'm').test(mustScanCode(st.code, langId)); } catch (e) { mustOk = true; }
           }
           u2.stats.codeRuns = (u2.stats.codeRuns || 0) + 1;
           if (LS.daily) LS.daily.record(u2, 'run', 1);
           LS.store.save();
 
+          const blocked = !!(res.ok && actual === expected && !mustOk);
           if (!res.ok || actual !== expected || !mustOk) {
-            const info = failureInfo(langId, q, res, mustOk, st.code);
+            const info = failureInfo(langId, q, res, mustOk, st.code, blocked);
             const rawDmg = counterOf(u2, w, langId);
             const guarded = (st.guardLeft || 0) > 0;
-            const dmg = guarded ? 0 : rawDmg;
+            // 咒式未命中：敌人挡下攻击。反击伤害按敌人强度递减（小怪 50%、精英 75%、BOSS 全额）。
+            const blockRatio = blocked ? (w.type === 'boss' ? 1 : w.type === 'elite' ? .75 : .5) : 1;
+            const dmg = guarded ? 0 : Math.max(1, Math.round(rawDmg * blockRatio));
             if (guarded) st.guardLeft = Math.max(0, (st.guardLeft || 0) - 1);
             st.failCount++;
             st.failByQ[q.qIndex] = (Number(st.failByQ[q.qIndex]) || 0) + 1;
@@ -1126,6 +1227,7 @@
             st.attackLock = true;
             st.term = {
               kind: 'fail',
+              blocked,
               output: res.output,
               error: res.error,
               en: info.en,
@@ -1136,6 +1238,8 @@
               diff: firstDiff(expected, actual),
               damage: dmg,
               guarded,
+              blockRatio,
+              mustText: blocked && q.must ? q.must.text : '',
               qIndex: st.qIndex
             };
             saveBattle(u2, langId, node2.id, st);
@@ -1146,6 +1250,9 @@
             paintSilence(root);
             setPlayerExpr('hurt');
             setFx('enemy-charge');
+            if (blocked) {
+              LS.toast('咒式未命中 · 攻击被格挡', '敌人识破了捷径。' + (q.must && q.must.text ? q.must.text : '请按题目要求使用指定语法。'), 'red', 'shield');
+            }
             setTimeout(() => {
               if (!isLive()) return;
               setFx('hurt');
@@ -1164,7 +1271,7 @@
           }
 
           // 命中：输出与预期一致。攻击力提升单次伤害，强装可以提前击破。
-          const atk = gearStatsOf(u2, langId).atk || 0;
+          const atk = combatStatsOf(u2, langId).atk || 0;
           const dealt = 100 + atk;
           const wi = q.waveIndex;
           st.waveHp[wi] = Math.max(0, waveHpOf(st, wi) - dealt);
@@ -1275,6 +1382,10 @@
           else if (btn.id === 'hint-btn') { ev.preventDefault(); showHint(); }
           else if (btn.id === 'solution-btn') { ev.preventDefault(); showSolution(); }
           else if (btn.id === 'rematch-btn') { ev.preventDefault(); rematch(); }
+          else if (btn.dataset && btn.dataset.awakenInfo && LS.awaken) {
+            ev.preventDefault();
+            LS.awaken.openInfo(u2, btn.dataset.awakenInfo);
+          }
         });
 
         updateFooter(root);

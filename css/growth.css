@@ -435,7 +435,7 @@
 }
 
 /* ---------- scene decor: art backdrops + floating crystals ---------- */
-.growth-page { position: relative; }
+.growth-page { position: relative; overflow-x: clip; }
 .growth-bg {
   position: absolute; top: -58px; left: 50%; transform: translateX(-50%);
   width: min(1280px, 100vw); height: 440px;

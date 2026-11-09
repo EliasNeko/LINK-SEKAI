@@ -102,6 +102,12 @@
             <div><b>知识天书已翻开</b><p>术语、考纲与代码示例都在这里。遇到不懂的词，先查天书，再问终端。</p></div>
             <a class="btn btn-sm btn-ghost" href="#/codex">进入天书</a>
           </div>
+
+          <div class="side-cta">
+            <div class="side-cta-art">${LS.icon('terminal', 26)}</div>
+            <div><b>演武场随时开放</b><p>不扣血、不耗资源。挑一门已点亮的语言自由写代码，报错会附上英文原文与中文译注。</p></div>
+            <a class="btn btn-sm btn-ghost" href="#/training">去演武场</a>
+          </div>
         </div>
 
         <aside class="hub-side">

@@ -212,6 +212,7 @@
     { href: '#/', label: '星海大厅', jp: 'HALL', icon: 'home', key: 'hub' },
     { href: '#/world', label: '星轨地图', jp: 'WORLD', icon: 'map', key: 'world' },
     { href: '#/codex', label: '知识天书', jp: 'CODEX', icon: 'book', key: 'codex' },
+    { href: '#/training', label: '星海演武场', jp: 'SANDBOX', icon: 'terminal', key: 'training' },
     { href: '#/daily', label: '每日委托', jp: 'DAILY', icon: 'clock', key: 'daily' },
     { href: '#/shop', label: '星辉商店', jp: 'SHOP', icon: 'bag', key: 'shop' },
     { href: '#/forge', label: '锻造台', jp: 'FORGE', icon: 'flame', key: 'forge' },
@@ -226,6 +227,30 @@
     return '<div class="brand"><div class="brand-mark">L</div><div class="brand-text"><b>LINK-SEKAI</b><span>コード異世界</span></div></div>';
   }
 
+  /* 头像悬浮卡：鼠标停在头像上可以直接进入旅人档案。移动端点击头像同样跳转。 */
+  function profilePop(u, size, cls) {
+    const lv = LS.levelFromXp(u.xp || 0);
+    const lang = LS.lang(u.primaryLang) || LS.LANGS[0];
+    const title = LS.titleById(u.titleEquipped);
+    const nodes = u.stats ? (u.stats.nodesDone || 0) : 0;
+    const body = LS.avatarView
+      ? LS.avatarView(u, size, '', { alt: u.gameName })
+      : (u.avatar ? `<img src="${u.avatar}" alt="">` : LS.charImg(Object.assign({ langId: u.primaryLang || 'python' }, u.char || {}), size));
+    return `<a class="av-pop-wrap ${cls || ''}" href="#/profile" aria-label="进入旅人档案">
+      ${body}
+      <i class="av-pop-dot" data-social-dot aria-hidden="true"></i>
+      <span class="av-pop-card" role="tooltip">
+        <span class="apc-top">
+          ${LS.avatarView ? LS.avatarView(u, 46, 'apc-av', { alt: u.gameName }) : body}
+          <span class="apc-id"><b>${LS.esc(u.gameName)}</b><em>${LS.esc(lang ? lang.profession : '旅人')} · Lv.${lv.level}</em></span>
+        </span>
+        <span class="apc-title">${title.icon} ${LS.esc(title.name)}</span>
+        <span class="apc-stats"><i>${nodes} 节点</i><i>${(u.friends || []).length} 同行者</i><i>${LS.esc(u.uid)}</i></span>
+        <span class="apc-go">进入旅人档案 ${LS.icon('arrow', 11)}</span>
+      </span>
+    </a>`;
+  }
+
   function shell(active, content, title, sub) {
     const u = LS.store.current();
     const lv = LS.levelFromXp(u.xp || 0);
@@ -235,7 +260,7 @@
         ${brand()}
         <div>
           <div class="nav-label">导航 · NAVIGATION</div>
-          <nav class="nav">${NAV.map(n => `<a href="${n.href}" class="${active === n.key ? 'active' : ''}">${LS.icon(n.icon)}<span>${n.label}</span></a>`).join('')}</nav>
+          <nav class="nav">${NAV.map(n => `<a href="${n.href}" class="${active === n.key ? 'active' : ''}">${LS.icon(n.icon)}<span>${n.label}</span>${n.key === 'friends' ? `<i class="nav-badge social" data-social-badge hidden title="待处理的好友申请">0</i>` : ''}</a>`).join('')}</nav>
         </div>
         <div class="sidebar-spacer"></div>
         <div class="side-card">
@@ -245,7 +270,7 @@
           <div class="side-xp"><span>经验 ${LS.formatNum(u.xp || 0)} / ${LS.formatNum(lv.next)}</span><span>${lv.pct}%</span></div>
         </div>
         <div class="side-user">
-          ${u.avatar ? `<img src="${u.avatar}" alt="">` : LS.charImg(Object.assign({ langId: u.primaryLang || 'python' }, u.char || {}), 38)}
+          ${profilePop(u, 38, 'side-av')}
           <div style="min-width:0"><div class="su-name">${LS.esc(u.gameName)}</div><div class="su-uid">${LS.esc(u.uid)}</div></div>
           <button class="logout-btn" data-logout title="退出登录">${LS.icon('logout', 15)}</button>
         </div>
@@ -260,7 +285,7 @@
             <div class="top-chip hide-mobile">${LS.icon('spark')} 灵感 <b>${u.inspiration || 0}</b></div>
             <div class="top-chip">${LS.icon('gem')} <b>${LS.formatNum(u.coins || 0)}</b> 星辉</div>
             <div class="top-chip hide-mobile">${LS.icon('star')} <b>${LS.formatNum(u.xp || 0)}</b> 经验</div>
-            ${u.avatar ? `<img class="topbar-avatar" src="${u.avatar}" alt="">` : LS.charImg(Object.assign({ langId: u.primaryLang || 'python' }, u.char || {}), 34, 'topbar-avatar')}
+            ${profilePop(u, 34, 'top-av')}
           </div>
         </div>
         <div id="view">${content}</div>
@@ -308,6 +333,17 @@
       return;
     }
 
+    if (u.onboardingDone && !u.tutorialDone && path !== 'tutorial') {
+      location.hash = '#/tutorial';
+      return;
+    }
+
+    if (path === 'tutorial') {
+      app.innerHTML = VIEWS.tutorial ? VIEWS.tutorial.html() : '';
+      if (VIEWS.tutorial) setTimeout(() => VIEWS.tutorial.mount(app), 0);
+      return;
+    }
+
     if (path === 'onboarding') {
       app.innerHTML = VIEWS.onboarding ? VIEWS.onboarding.html() : '';
       if (VIEWS.onboarding) setTimeout(() => VIEWS.onboarding.mount(app), 0);
@@ -319,11 +355,14 @@
     LS.syncTitles(u);
     if (LS.daily) LS.daily.ensure(u);
     if (u.coins == null) u.coins = 0;
+    /* 线上登录后启动星网轮询：好友申请、处理结果与新同行者都会自动出现。 */
+    if (LS.social) LS.social.maybeBoot();
 
     let view = null, active = 'hub', title = '星海大厅', sub = 'HALL OF STARDUST';
     if (!path) view = VIEWS.hub;
     else if (path === 'world') { view = VIEWS.world; active = 'world'; title = '星轨地图'; sub = 'WORLD MAP'; }
     else if (path === 'codex') { view = VIEWS.codex || VIEWS.world; active = 'codex'; title = '知识天书'; sub = 'CODEX ARCANUM'; }
+    else if (path === 'training') { view = VIEWS.training; active = 'training'; title = '星海演武场'; sub = 'ARCANE SANDBOX'; }
     else if (path === 'lesson' || path === 'story') { view = VIEWS.lesson; active = 'world'; title = '天书阅览'; sub = 'GRIMOIRE'; }
     else if (path === 'battle') { view = VIEWS.battle; active = 'world'; title = '代码试炼'; sub = 'CODE DUEL'; }
     else if (path === 'daily') { view = VIEWS.daily; active = 'daily'; title = '每日委托'; sub = 'DAILY MISSIONS'; }
@@ -391,7 +430,12 @@
     render();
     /* 线上版本：恢复云端会话与存档；本地 file:// 版本不会发起任何请求。 */
     if (LS.cloud && LS.cloud.enabled) {
-      LS.cloud.boot().then(ok => { if (ok) render(); }).catch(() => { });
+      LS.cloud.boot().then(ok => {
+        if (ok) {
+          render();
+          if (LS.social) LS.social.maybeBoot();
+        }
+      }).catch(() => { });
     }
     /* 每次打开页面展示一次星门公告；等首屏稳定后再出现，避免遮挡加载。 */
     setTimeout(() => {

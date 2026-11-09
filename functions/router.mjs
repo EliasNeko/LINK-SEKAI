@@ -62,6 +62,250 @@ function publicUser(row) {
   };
 }
 
+/* ── 星网社交：公开摘要、好友对、申请与结果通知 ───────────── */
+const SOCIAL_FRIEND_LIMIT = 80;
+const SOCIAL_REQUEST_LIMIT = 40;
+const SOCIAL_NOTICE_LIMIT = 20;
+
+function normalizeRemark(raw) {
+  if (raw == null) return '';
+  if (typeof raw !== 'string') throw new AppError('invalid_input', 400);
+  const value = raw.trim();
+  if ([...value].length > 16) throw new AppError('invalid_input', 400);
+  return value;
+}
+
+function friendPair(a, b) {
+  const [x, y] = a < b ? [a, b] : [b, a];
+  return { key: `${x}:${y}`, a: x, b: y };
+}
+
+// 只公开档案需要的字段；密码摘要与会话信息从不进入存档，更不会出现在这里。
+function socialSummary(row) {
+  const s = asState(row.game_data);
+  return {
+    uid: row.game_uid,
+    gameName: row.game_name,
+    bio: typeof s.bio === 'string' ? s.bio.slice(0, 120) : '',
+    avatar: typeof s.avatar === 'string' ? s.avatar : null,
+    avatarId: typeof s.avatarId === 'string' ? s.avatarId : null,
+    frame: typeof s.frame === 'string' ? s.frame : 'none',
+    primaryLang: typeof s.primaryLang === 'string' ? s.primaryLang : 'python',
+    activeLangs: Array.isArray(s.activeLangs) ? s.activeLangs.filter(x => typeof x === 'string').slice(0, 6) : [],
+    xp: Math.max(0, Math.floor(Number(s.xp) || 0)),
+    titles: Array.isArray(s.titles) ? s.titles.filter(x => typeof x === 'string').slice(0, 40) : [],
+    titleEquipped: typeof s.titleEquipped === 'string' ? s.titleEquipped : 'newcomer',
+    stats: s.stats && typeof s.stats === 'object' && !Array.isArray(s.stats) ? s.stats : {},
+    updatedAt: row.updated_at || null,
+  };
+}
+
+function socialProfile(row) {
+  const s = asState(row.game_data);
+  return Object.assign(socialSummary(row), {
+    banner: typeof s.banner === 'string' ? s.banner : null,
+    progress: s.progress && typeof s.progress === 'object' && !Array.isArray(s.progress) ? s.progress : {},
+    equipment: Array.isArray(s.equipment) ? s.equipment.slice(0, 100) : [],
+    createdAt: row.created_at || null,
+    friends: [],
+  });
+}
+
+async function loadSocialRows(db, ids) {
+  const out = new Map();
+  const seen = new Set();
+  for (const id of ids) {
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    const found = rows(await db.from('game_users')
+      .select('id,game_uid,game_name,game_data,created_at,updated_at')
+      .eq('id', id).limit(1));
+    if (found.length === 1) out.set(id, found[0]);
+  }
+  return out;
+}
+
+async function socialFriendships(db, userId) {
+  const asA = rows(await db.from('game_friends')
+    .select('user_a,user_b,created_at').eq('user_a', userId).limit(SOCIAL_FRIEND_LIMIT));
+  const asB = rows(await db.from('game_friends')
+    .select('user_a,user_b,created_at').eq('user_b', userId).limit(SOCIAL_FRIEND_LIMIT));
+  const map = new Map();
+  asA.forEach(r => { if (!map.has(r.user_b)) map.set(r.user_b, r.created_at); });
+  asB.forEach(r => { if (!map.has(r.user_a)) map.set(r.user_a, r.created_at); });
+  return map;
+}
+
+async function addFriendship(db, a, b, now) {
+  const pair = friendPair(a, b);
+  rows(await db.from('game_friends').insertIfAbsent({
+    pair_key: pair.key, user_a: pair.a, user_b: pair.b, created_at: now,
+  }, { onConflict: 'pair_key' }).select('pair_key'));
+}
+
+async function pushNotice(db, userId, otherUserId, status, now) {
+  rows(await db.from('game_friend_notices').insertIfAbsent({
+    id: crypto.randomUUID(), user_id: userId, other_user: otherUserId,
+    status, created_at: now,
+  }, { onConflict: 'id' }).select('id'));
+}
+
+async function socialOverview(db, userId) {
+  const friendships = await socialFriendships(db, userId);
+  const friendIds = [...friendships.keys()];
+  const incomingRows = rows(await db.from('game_friend_requests')
+    .select('id,from_user,to_user,remark,created_at')
+    .eq('to_user', userId).eq('status', 'pending').limit(SOCIAL_REQUEST_LIMIT));
+  const outgoingRows = rows(await db.from('game_friend_requests')
+    .select('id,from_user,to_user,remark,created_at')
+    .eq('from_user', userId).eq('status', 'pending').limit(SOCIAL_REQUEST_LIMIT));
+  const noticeRows = rows(await db.from('game_friend_notices')
+    .select('id,user_id,other_user,status,created_at')
+    .eq('user_id', userId).limit(50))
+    .sort((a, b) => (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0))
+    .slice(0, SOCIAL_NOTICE_LIMIT);
+
+  const ids = friendIds
+    .concat(incomingRows.map(r => r.from_user))
+    .concat(outgoingRows.map(r => r.to_user))
+    .concat(noticeRows.map(r => r.other_user));
+  const users = await loadSocialRows(db, ids);
+
+  const friends = [];
+  friendIds.forEach(id => {
+    const row = users.get(id);
+    if (row) friends.push(Object.assign(socialSummary(row), { friendSince: friendships.get(id) }));
+  });
+  const incoming = incomingRows.map(r => {
+    const row = users.get(r.from_user);
+    return row ? { id: r.id, remark: r.remark || '', createdAt: r.created_at, from: socialSummary(row) } : null;
+  }).filter(Boolean);
+  const outgoing = outgoingRows.map(r => {
+    const row = users.get(r.to_user);
+    return row ? { id: r.id, remark: r.remark || '', createdAt: r.created_at, to: socialSummary(row) } : null;
+  }).filter(Boolean);
+  const notices = noticeRows.map(r => {
+    const row = users.get(r.other_user);
+    return row ? { id: r.id, status: r.status, respondedAt: r.created_at, other: socialSummary(row) } : null;
+  }).filter(Boolean);
+
+  return { friends, incoming, outgoing, notices };
+}
+
+async function findTarget(db, rawUid) {
+  const uid = String(rawUid || '').trim().toUpperCase();
+  if (!/^LSK-[A-Z0-9]{6}$/.test(uid)) return null;
+  const found = rows(await db.from('game_users')
+    .select('id,game_uid,game_name,game_data,created_at,updated_at')
+    .eq('game_uid', uid).limit(1));
+  return found.length === 1 ? found[0] : null;
+}
+
+async function socialRequest(db, request, session) {
+  const body = await readJson(request, BODY_LIMIT);
+  const remark = normalizeRemark(body?.remark);
+  const target = await findTarget(db, body?.uid);
+  if (!target) return errorJson('player_not_found', 404);
+  if (target.id === session.userId) return errorJson('cannot_add_self', 400);
+
+  const limit = await consume(db, 'social', session.userId);
+  if (!limit.allowed) return errorJson('rate_limited', 429, retryAfter(limit));
+
+  const pair = friendPair(session.userId, target.id);
+  const already = rows(await db.from('game_friends').select('pair_key').eq('pair_key', pair.key).limit(1));
+  if (already.length > 0) return errorJson('already_friends', 409);
+
+  const now = new Date().toISOString();
+  // 对方此前也向我发过申请：双向同意，直接结伴，并给对方留下结果通知。
+  const reverse = rows(await db.from('game_friend_requests')
+    .select('id,from_user,to_user').eq('from_user', target.id).eq('to_user', session.userId)
+    .eq('status', 'pending').limit(1));
+  if (reverse.length === 1) {
+    const updated = rows(await db.from('game_friend_requests')
+      .update({ status: 'accepted', responded_at: now })
+      .eq('id', reverse[0].id).eq('status', 'pending').select('id'));
+    if (updated.length !== 1) return errorJson('request_conflict', 409);
+    await addFriendship(db, session.userId, target.id, now);
+    await pushNotice(db, target.id, session.userId, 'accepted', now);
+    return json({ ok: true, accepted: true, player: socialSummary(target) });
+  }
+
+  const same = rows(await db.from('game_friend_requests')
+    .select('id').eq('from_user', session.userId).eq('to_user', target.id)
+    .eq('status', 'pending').limit(1));
+  if (same.length > 0) return errorJson('request_pending', 409);
+
+  const pendingForMe = rows(await db.from('game_friend_requests')
+    .select('id').eq('to_user', session.userId).eq('status', 'pending').limit(SOCIAL_REQUEST_LIMIT + 1));
+  if (pendingForMe.length > SOCIAL_REQUEST_LIMIT) return errorJson('request_limit', 429);
+
+  const inserted = rows(await db.from('game_friend_requests').insertIfAbsent({
+    id: crypto.randomUUID(),
+    from_user: session.userId,
+    to_user: target.id,
+    remark,
+    status: 'pending',
+    created_at: now,
+    responded_at: null,
+  }, { onConflict: 'id' }).select('id'));
+  if (inserted.length !== 1) return errorJson('request_conflict', 409);
+  return json({ ok: true, accepted: false, player: socialSummary(target) });
+}
+
+async function socialRespond(db, request, session) {
+  const body = await readJson(request, BODY_LIMIT);
+  const id = typeof body?.id === 'string' ? body.id : '';
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) {
+    throw new AppError('invalid_input', 400);
+  }
+  const action = body?.action;
+  if (action !== 'accept' && action !== 'reject') throw new AppError('invalid_input', 400);
+
+  const limit = await consume(db, 'social', session.userId);
+  if (!limit.allowed) return errorJson('rate_limited', 429, retryAfter(limit));
+
+  const found = rows(await db.from('game_friend_requests')
+    .select('id,from_user,to_user')
+    .eq('id', id).eq('to_user', session.userId).eq('status', 'pending').limit(1));
+  if (found.length !== 1) return errorJson('request_not_found', 404);
+
+  const now = new Date().toISOString();
+  const status = action === 'accept' ? 'accepted' : 'rejected';
+  const updated = rows(await db.from('game_friend_requests')
+    .update({ status, responded_at: now })
+    .eq('id', id).eq('status', 'pending').select('id'));
+  if (updated.length !== 1) return errorJson('request_conflict', 409);
+
+  if (action === 'accept') await addFriendship(db, session.userId, found[0].from_user, now);
+  // 申请结果只写给发起方；处理方已经从界面得到即时反馈。
+  await pushNotice(db, found[0].from_user, session.userId, status, now);
+
+  const target = rows(await db.from('game_users')
+    .select('id,game_uid,game_name,game_data,created_at,updated_at')
+    .eq('id', found[0].from_user).limit(1));
+  return json({ ok: true, player: target.length === 1 ? socialSummary(target[0]) : null });
+}
+
+async function socialRemove(db, request, session) {
+  const body = await readJson(request, BODY_LIMIT);
+  const target = await findTarget(db, body?.uid);
+  if (!target) return errorJson('player_not_found', 404);
+
+  const limit = await consume(db, 'social', session.userId);
+  if (!limit.allowed) return errorJson('rate_limited', 429, retryAfter(limit));
+
+  const pair = friendPair(session.userId, target.id);
+  await db.from('game_friends').delete().eq('pair_key', pair.key).select('pair_key');
+  return json({ ok: true });
+}
+
+async function socialPlayer(db, request) {
+  const uid = new URL(request.url).searchParams.get('uid');
+  const target = await findTarget(db, uid);
+  if (!target) return errorJson('player_not_found', 404);
+  return json({ player: socialProfile(target) });
+}
+
 function asState(value) {
   if (value == null) return {};
   if (typeof value === 'string') {
@@ -208,6 +452,27 @@ async function route(db, request, origin) {
     });
   }
 
+  /* ── 星网社交 ─────────────────────────────────────────── */
+  if (path === '/api/social' && request.method === 'GET') {
+    const session = await requireSession(db, request);
+    return json(await socialOverview(db, session.userId));
+  }
+  if (path === '/api/social/request' && request.method === 'POST') {
+    const session = await requireSession(db, request);
+    return socialRequest(db, request, session);
+  }
+  if (path === '/api/social/respond' && request.method === 'POST') {
+    const session = await requireSession(db, request);
+    return socialRespond(db, request, session);
+  }
+  if (path === '/api/social/remove' && request.method === 'POST') {
+    const session = await requireSession(db, request);
+    return socialRemove(db, request, session);
+  }
+  if (path === '/api/social/player' && request.method === 'GET') {
+    return socialPlayer(db, request);
+  }
+
   if (path === '/api/state' && request.method === 'GET') {
     const session = await requireSession(db, request);
     const user = await loadUser(db, session.userId);
@@ -260,7 +525,8 @@ async function route(db, request, origin) {
     }, 409);
   }
 
-  if (['/api/me', '/api/state', '/api/logout', '/api/register', '/api/login'].includes(path)) {
+  if (['/api/me', '/api/state', '/api/logout', '/api/register', '/api/login',
+    '/api/social', '/api/social/request', '/api/social/respond', '/api/social/remove', '/api/social/player'].includes(path)) {
     throw new AppError('method_not_allowed', 405);
   }
   throw new AppError('not_found', 404);

@@ -228,11 +228,16 @@
     out.daily = local.daily || remote.daily || null;
     out.char = local.char || remote.char || null;
     out.avatar = local.avatar || remote.avatar || null;
+    out.avatarId = local.avatarId || remote.avatarId || null;
+    out.frame = local.frame || remote.frame || 'none';
+    out.banner = local.banner || remote.banner || null;
     out.bio = local.bio || remote.bio || '';
     out.gameName = local.gameName || remote.gameName;
     out.primaryLang = local.primaryLang || remote.primaryLang || null;
     out.activeLangs = Array.from(new Set([].concat(local.activeLangs || [], remote.activeLangs || [])));
     out.onboardingDone = !!(local.onboardingDone || remote.onboardingDone);
+    out.tutorialDone = !!(local.tutorialDone || remote.tutorialDone);
+    out.tutorialReward = !!(local.tutorialReward || remote.tutorialReward);
     out.settings = Object.assign({}, remote.settings || {}, local.settings || {});
     out.flags = Object.assign({}, remote.flags || {}, local.flags || {});
     return out;
