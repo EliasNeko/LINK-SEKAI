@@ -2,7 +2,7 @@
 (function (LS) {
   'use strict';
 
-  const GUIDE_IMG = 'assets/guide/guide_tia.webp?v=20261109V28';
+  const GUIDE_IMG = 'assets/guide/guide_tia.webp?v=20261109V33';
   const GIFT_COINS = 120;
   const GIFT_INSPIRATION = 1;
 

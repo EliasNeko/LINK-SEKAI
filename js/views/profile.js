@@ -507,7 +507,7 @@
       bio: user.bio || '',
       primary: user.primaryLang || (user.activeLangs || [])[0] || 'python',
       avatarId: user.avatarId || (user.avatar ? 'upload' : null),
-      avatar: user.avatar || null,
+      avatar: user.avatarId && user.avatarId !== 'upload' ? null : (user.avatar || null),
       frame: user.frame || 'none',
       banner: user.banner || null
     };

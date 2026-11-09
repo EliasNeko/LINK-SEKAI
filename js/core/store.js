@@ -101,6 +101,10 @@
       if (typeof u.cloudAccount !== 'boolean') { u.cloudAccount = false; changed = true; }
       if (!Number.isSafeInteger(u.cloudVersion) || u.cloudVersion < 0) { u.cloudVersion = 0; changed = true; }
       if (!('avatarId' in u)) { u.avatarId = null; changed = true; }
+      /* 旧档清理：换成官方头像后，残留的自上传裁切图会盖住官方立绘，必须移除 */
+      if (!u.avatarId && u.avatar) { u.avatarId = 'upload'; changed = true; }
+      if (u.avatarId && u.avatarId !== 'upload' && u.avatar) { u.avatar = null; changed = true; }
+      if (u.avatarId === 'upload' && !u.avatar) { u.avatarId = null; changed = true; }
       if (!u.frame) { u.frame = 'none'; changed = true; }
       if (!('banner' in u)) { u.banner = null; changed = true; }
       return changed;

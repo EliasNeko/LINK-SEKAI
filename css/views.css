@@ -1430,7 +1430,7 @@ pre.code-block, .code-block-wrap pre.code-block {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 184px minmax(0, 1fr) 272px;
+  grid-template-columns: 300px minmax(0, 1fr) 272px;
   gap: 24px;
   align-items: center;
   padding: 32px clamp(24px, 3.6vw, 46px);
@@ -2132,7 +2132,7 @@ pre.code-block, .code-block-wrap pre.code-block {
   .hub-hero-char { right: 2%; width: 250px; }
   .hub-hero-progress { top: 18px; right: 18px; }
   .glossary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .pf-hero-inner { grid-template-columns: 160px minmax(0, 1fr) 240px; }
+  .pf-hero-inner { grid-template-columns: 244px minmax(0, 1fr) 240px; }
   .pf-avatar { width: 152px; height: 152px; }
   .battle-grid { grid-template-columns: 294px minmax(0, 1fr); }
 }
@@ -2155,7 +2155,7 @@ pre.code-block, .code-block-wrap pre.code-block {
   .player-card { grid-column: 2; margin-top: 0; align-self: start; }
   .pf-grid { grid-template-columns: 1fr; }
   .pf-side { grid-template-columns: repeat(3, minmax(0, 1fr)); display: grid; }
-  .pf-hero-inner { grid-template-columns: 150px minmax(0, 1fr); }
+  .pf-hero-inner { grid-template-columns: 214px minmax(0, 1fr); }
   .pf-seal { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; text-align: left; }
   .pf-seal-ring { margin: 0; }
   .pf-seal-gear { margin-top: 0; border-top: 0; padding-top: 0; border-left: 1px dashed var(--line); padding-left: 16px; }

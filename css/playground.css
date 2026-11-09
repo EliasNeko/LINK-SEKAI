@@ -237,6 +237,11 @@
   color: var(--gold); font-size: 8px; font-family: var(--font-ui);
 }
 .tr-mini-btn:hover { color: var(--gold-bright); border-color: var(--line-strong); }
+.tr-demo-tag {
+  display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px;
+  border: 1px dashed rgba(201,164,92,.26); color: #a99a80; font-style: normal;
+  font-size: 8px; letter-spacing: .04em; background: rgba(201,164,92,.035);
+}
 .tr-book-note { color: #8a7c67; font-size: 8.5px; line-height: 1.7; border-left: 2px solid rgba(201,164,92,.26); padding-left: 7px; margin-top: 6px; }
 
 body.tr-drawer-open { overflow: hidden; }

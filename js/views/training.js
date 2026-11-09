@@ -35,13 +35,14 @@
     try { localStorage.setItem(draftKey(u, langId), code); } catch (e) { /* ignore */ }
   }
 
-  /* 从本章天书里抽出可运行的示例代码，作为练习素材。 */
+  /* 从本章天书里抽出可运行的示例代码，作为练习素材。
+     标记 runnable:false 的是语法概念片段（伪代码/跨语言节选），不能直接运行。 */
   function samplesOf(lang) {
     const out = [];
     (lang.chapters || []).forEach(ch => (ch.nodes || []).forEach(n => {
       if (n.type !== 'lesson' || !n.article) return;
       (n.article.sections || []).forEach(sec => {
-        if (!sec.code || !sec.code.src) return;
+        if (!sec.code || !sec.code.src || sec.code.runnable === false) return;
         out.push({ chapter: ch.title, title: sec.h, src: sec.code.src });
       });
     }));
@@ -159,13 +160,16 @@
         <div class="tr-book-ch-title">${LS.esc(ch.title)}<span>${LS.esc(ch.jp)}</span></div>
         ${lessons.map(n => {
           const sections = (n.article.sections || []).map((sec, si) => {
+            const runnable = !(sec.code && sec.code.runnable === false);
             const code = sec.code && sec.code.src ? `<pre class="tr-book-code">${LS.esc(sec.code.src)}</pre>` : '';
             const paras = (sec.p || []).slice(0, 2).map(p => `<p>${LS.esc(p)}</p>`).join('');
             return `<details class="tr-book-sec" data-search="${LS.esc((ch.title + ' ' + n.title + ' ' + sec.h + ' ' + (sec.p || []).join(' ')).toLowerCase())}">
               <summary><span>${LS.esc(sec.h)}</span><i>${LS.esc(lang.name)}</i></summary>
               <div class="tr-book-sec-body">
                 ${paras}
-                ${code ? `<div class="tr-book-code-wrap">${code}<div class="tr-book-code-btns"><button class="tr-mini-btn" data-insert="${lang.id}:${n.id}:${si}">插入到光标</button><button class="tr-mini-btn" data-run-snippet="${lang.id}:${n.id}:${si}">直接运行</button></div></div>` : ''}
+                ${code ? `<div class="tr-book-code-wrap">${code}<div class="tr-book-code-btns"><button class="tr-mini-btn" data-insert="${lang.id}:${n.id}:${si}">插入到光标</button>${runnable
+                  ? `<button class="tr-mini-btn" data-run-snippet="${lang.id}:${n.id}:${si}">直接运行</button>`
+                  : '<em class="tr-demo-tag">概念示例 · 暂不支持直接运行</em>'}</div></div>` : ''}
                 ${sec.note ? `<p class="tr-book-note">${LS.esc(sec.note)}</p>` : ''}
               </div>
             </details>`;
@@ -390,6 +394,10 @@
       scope.querySelectorAll('[data-run-snippet]').forEach(btn => btn.addEventListener('click', () => {
         const sec = sectionByRef(btn.dataset.runSnippet);
         if (!sec || !sec.code) return;
+        if (sec.code.runnable === false) {
+          LS.toast('概念示例无法直接运行', '这类片段用于讲解语法结构，请先插入后补全为完整程序。', 'gold', 'book');
+          return;
+        }
         editor.setValue(sec.code.src);
         writeDraft(u, current, sec.code.src);
         runCode(sec.code.src);
