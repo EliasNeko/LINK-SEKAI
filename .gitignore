@@ -3,6 +3,7 @@ art-source/
 vibe_images/
 dist/
 .tmp-webp/
+.tmp-*
 
 # 依赖与缓存
 node_modules/
