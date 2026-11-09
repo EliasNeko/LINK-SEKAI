@@ -20,7 +20,7 @@
   const ACTS = ['idle', 'attack', 'hurt'];
   const HERO_DIR = 'assets/heroes/';
   /* 立绘素材版本号：换图后同步 index.html 的 ?v= 一起改，避免浏览器缓存旧图。 */
-  const ASSET_V = '20261109V33';
+  const ASSET_V = '20261110V35';
   LS.ASSET_V = ASSET_V;
   function vurl(p) { return p + '?v=' + ASSET_V; }
   /* 逐角色素材目录覆盖（重做中的角色先走 v6，未重做仍用 v5） */

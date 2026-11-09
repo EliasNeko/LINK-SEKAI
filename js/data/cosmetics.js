@@ -13,7 +13,7 @@
   const HERO_COLOR = {
     python: '#5ff0d6', java: '#c093ff', c: '#79e3a8', javascript: '#ffd57e', cpp: '#ff9f6e', go: '#6fb9ff'
   };
-  const AV = LS.ASSET_V || '20261109V33';
+  const AV = LS.ASSET_V || '20261110V34';
   const v = (p) => p + '?v=' + AV;
   const baseSrc = (id) => v((id === 'java' ? 'assets/heroes_v6/' : 'assets/heroes/') + 'av_' + id + '.webp');
 
@@ -72,7 +72,7 @@
     },
     {
       id: 'starlight', name: '星辉长夜', jp: '星輝の長夜', quality: 'epic', unlock: { type: 'stat', key: 'battlesWon', value: 30 },
-      from: '累计赢得 30 场代码试炼', fx: '星环边饰 + 星屑'
+      from: '累计赢得 30 场代码试炼', fx: '方形星辉 + 星屑'
     },
     {
       id: 'abyss', name: '深渊回响', jp: '深淵の響き', quality: 'epic', unlock: { type: 'stat', key: 'bossNoHint', value: 1 },
@@ -80,7 +80,7 @@
     },
     {
       id: 'social', name: '星网织环', jp: '星網の織環', quality: 'epic', unlock: { type: 'friends', count: 5 },
-      from: '同行者达到 5 位', fx: '双色织环 + 节点光点'
+      from: '同行者达到 5 位', fx: '双色方框 + 节点光点'
     },
     {
       id: 'banner', name: '画境之框', jp: '画境の枠', quality: 'rare', unlock: { type: 'banner' },
@@ -88,14 +88,15 @@
     },
     {
       id: 'origin', name: '源核棱镜', jp: '源核のプリズム', quality: 'mythic', unlock: { type: 'stageAny', stage: 3 },
-      from: '任意职业熟练度达到第三阶段', fx: '棱镜边饰 + 晶屑'
+      from: '任意职业熟练度达到第三阶段', fx: '棱镜方框 + 晶屑'
     }
   ];
   HEROES.forEach(id => {
     FRAMES.push({
       id: 'mastery_' + id, name: HERO_NAME[id] + '·精通框', jp: '精通の枠', quality: 'mythic',
       unlock: { type: 'stage', lang: id, stage: 3 }, from: HERO_NAME[id] + '熟练度达到第三阶段（850）',
-      fx: '职业龙翼 + 粒子光环', color: HERO_COLOR[id]
+      fx: '方形星冕 + 元素角饰 + 环绕粒子', color: HERO_COLOR[id],
+      art: 'assets/frames/mastery_' + id + '.webp'
     });
   });
 
@@ -109,33 +110,6 @@
     python: 'wand', java: 'coffee', c: 'heart',
     javascript: 'spark', cpp: 'sword', go: 'star'
   };
-
-  /* 精通框两侧的龙翼：龙骨为骨、翼膜为面，三指外张，左右对称。
-     每个实例独立渐变，颜色取当前头像框的 --av-color。 */
-  let wingSeq = 0;
-  function wingsSvg() {
-    const gid = 'avWing' + (++wingSeq);
-    return `<svg class="av-wings" viewBox="0 0 220 100" style="--wing-fill:url(#${gid})" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="${gid}" x1="0.1" y1="0" x2="0.6" y2="1">
-        <stop offset="0" stop-color="#ffffff" stop-opacity=".66"/>
-        <stop offset=".3" stop-color="currentColor" stop-opacity=".92"/>
-        <stop offset=".68" stop-color="currentColor" stop-opacity=".55"/>
-        <stop offset="1" stop-color="currentColor" stop-opacity=".85"/>
-      </linearGradient>
-    </defs>
-    <g class="av-wing-set back">
-      <path d="M116 42 C102 28 86 18 68 12 C48 5 24 3 2 6 C11 15 17 23 21 34 C25 28 31 24 37 21 C33 31 35 44 40 56 C46 49 54 43 62 40 C59 51 64 64 71 76 C81 64 95 55 110 50 Z"/>
-      <path d="M104 42 C118 28 134 18 152 12 C172 5 196 3 218 6 C209 15 203 23 199 34 C195 28 189 24 183 21 C187 31 185 44 180 56 C174 49 166 43 158 40 C161 51 156 64 149 76 C139 64 125 55 110 50 Z"/>
-    </g>
-    <g class="av-wing-set main">
-      <path d="M116 42 C102 28 86 18 68 12 C48 5 24 3 2 6 C11 15 17 23 21 34 C25 28 31 24 37 21 C33 31 35 44 40 56 C46 49 54 43 62 40 C59 51 64 64 71 76 C81 64 95 55 110 50 Z"/>
-      <path class="av-wing-bone" d="M114 42 C92 24 60 12 6 7 M112 43 C80 36 54 34 24 35 M112 46 C84 48 62 54 40 57 M112 48 C94 54 80 62 71 74"/>
-      <path d="M104 42 C118 28 134 18 152 12 C172 5 196 3 218 6 C209 15 203 23 199 34 C195 28 189 24 183 21 C187 31 185 44 180 56 C174 49 166 43 158 40 C161 51 156 64 149 76 C139 64 125 55 110 50 Z"/>
-      <path class="av-wing-bone" d="M106 42 C128 24 160 12 214 7 M108 43 C140 36 166 34 196 35 M108 46 C136 48 158 54 180 57 M108 48 C126 54 140 62 149 74"/>
-    </g>
-  </svg>`;
-  }
 
   function stageOf(user, lang) {
     if (!user || !lang) return 0;
@@ -196,24 +170,39 @@
   }
   LS.avatarFallback = avatarFallback;
 
+  function masteryArtSrc(lang) {
+    return lang ? v('assets/frames/mastery_' + lang + '.webp') : '';
+  }
+  /* 二阶 / 精通头像自带特效层；小尺寸仍可识别阶段 */
+  function tierOf(src) {
+    if (/\/mastery_/.test(src)) return 'mastery';
+    if (/\/s2_/.test(src)) return 's2';
+    return '';
+  }
+
   function shellInner(user, fid, imgSrc, alt) {
     const lang = fid.indexOf('mastery_') === 0 ? fid.slice(8) : '';
     const crest = CRESTS[lang];
-    return `${crest ? wingsSvg() : ''}
+    const tier = tierOf(imgSrc);
+    const art = masteryArtSrc(lang);
+    return `${art ? `<img class="av-frame-art" src="${art}" alt="" aria-hidden="true" draggable="false" onerror="this.remove()">` : ''}
       <img class="av-img" src="${imgSrc}" alt="${LS.esc(alt || '')}" draggable="false" onerror="LS.avatarFallback(this)">
-      ${fid !== 'none' ? `<i class="av-fx" aria-hidden="true"></i><i class="av-gem" aria-hidden="true">${crest ? LS.icon(crest, 12) : ''}</i>` : ''}`;
+      ${tier ? '<i class="av-aura" aria-hidden="true"></i>' : ''}
+      ${fid !== 'none' ? `<i class="av-ring" aria-hidden="true"></i><i class="av-orbit" aria-hidden="true"></i><i class="av-fx" aria-hidden="true"></i><i class="av-gem" aria-hidden="true">${crest ? LS.icon(crest, 12) : ''}</i>` : ''}`;
   }
 
-  /* 统一头像组件：头像 + 主题边框 + 徽记 + 粒子（精通框额外带龙翼）。 */
+  /* 统一头像组件：头像 + 阶段特效 + 主题头像框 + 徽记 + 环绕粒子。 */
   function avatarView(user, size, cls, opts) {
     opts = opts || {};
     const px = Math.max(18, Math.round(Number(size) || 40));
     const fid = frameId(user);
+    const src = avatarSrc(user);
     const av = AVATAR_MAP[user && user.avatarId];
     const color = av ? av.color : ((LS.lang && LS.lang(user && user.primaryLang) || {}).color) || '#c9a45c';
     const mini = px < 52 ? ' av-mini' : '';
-    return `<span class="av-shell frame-${fid}${mini} ${cls || ''}" style="--av-size:${px}px;--av-color:${color}" title="${LS.esc(opts.title || (user && user.gameName) || '')}">
-      ${shellInner(user, fid, avatarSrc(user), opts.alt || (user && user.gameName) || '头像')}
+    const tier = tierOf(src);
+    return `<span class="av-shell frame-${fid}${mini}${tier ? ' av-tier-' + tier : ''} ${cls || ''}" style="--av-size:${px}px;--av-color:${color}" title="${LS.esc(opts.title || (user && user.gameName) || '')}">
+      ${shellInner(user, fid, src, opts.alt || (user && user.gameName) || '头像')}
     </span>`;
   }
 
@@ -239,9 +228,11 @@
     const on = frameId(user) === f.id;
     const unlocked = frameUnlocked(user, f.id);
     const q = qualityOf(f.quality);
+    const src = avatarSrc(user);
+    const tier = tierOf(src);
     return `<button class="cos-card fr-card ${on ? 'on' : ''} ${unlocked ? '' : 'locked'}" data-frame-id="${f.id}" data-unlocked="${unlocked ? '1' : '0'}" style="--q-color:${q.color};--q-glow:${q.glow};--av-color:${f.color || '#c9a45c'}">
       <span class="cos-art fr-preview">
-        <span class="av-shell frame-${f.id} av-fr-demo" style="--av-size:66px;--av-color:${f.color || '#c9a45c'}">${shellInner(user, f.id, avatarSrc(user), '')}</span>
+        <span class="av-shell frame-${f.id} av-fr-demo${tier ? ' av-tier-' + tier : ''}" style="--av-size:66px;--av-color:${f.color || '#c9a45c'}">${shellInner(user, f.id, src, '')}</span>
         ${unlocked ? '' : `<span class="cos-lock">${LS.icon('lock', 13)}<em>未解锁 · 预览</em></span>`}
         ${on ? '<span class="cos-check">佩戴中</span>' : ''}
       </span>

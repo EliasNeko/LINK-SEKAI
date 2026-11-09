@@ -12,6 +12,7 @@
   --halo: rgba(201, 164, 92, .16);
   --p1: rgba(240, 217, 176, .9);
   --p2: rgba(255, 255, 255, .8);
+  --frame-w: 152%;
   position: relative;
   display: inline-flex;
   width: var(--av-size, 40px);
@@ -35,19 +36,74 @@
   image-rendering: auto;
   background: radial-gradient(circle at 50% 30%, rgba(201, 164, 92, .16), #0b0910 72%);
 }
-.av-fx, .av-gem, .av-wings { position: absolute; pointer-events: none; }
+.av-fx, .av-gem, .av-ring, .av-orbit, .av-aura { position: absolute; pointer-events: none; }
+
+/* 阶段头像透明特效层：贴边辉光 + 旋转符文光弧 + 掠光，不遮面部 */
+.av-aura {
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  mix-blend-mode: screen;
+  opacity: .52;
+  background:
+    radial-gradient(130% 58% at 50% 116%, color-mix(in srgb, var(--av-color) 60%, transparent), transparent 68%),
+    radial-gradient(86% 46% at 50% -14%, color-mix(in srgb, var(--av-color) 44%, transparent), transparent 72%);
+  animation: avAuraPulse 6.4s ease-in-out infinite;
+}
+.av-tier-s2 .av-aura::before {
+  content: "";
+  position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from 20deg, transparent 0 24%, color-mix(in srgb, var(--av-color) 78%, white) 32%, transparent 42% 76%, color-mix(in srgb, var(--av-color) 60%, transparent) 84%, transparent 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: .7;
+  animation: avHaloSpin 13s linear infinite;
+}
+.av-tier-mastery .av-aura {
+  opacity: .95;
+  background:
+    radial-gradient(145% 64% at 50% 118%, color-mix(in srgb, var(--av-color) 78%, transparent), transparent 66%),
+    radial-gradient(100% 56% at 50% -20%, color-mix(in srgb, var(--av-color) 58%, transparent), transparent 72%),
+    radial-gradient(70% 44% at 0 44%, color-mix(in srgb, var(--p1) 34%, transparent), transparent 70%),
+    radial-gradient(70% 44% at 100% 58%, color-mix(in srgb, var(--p2) 28%, transparent), transparent 70%);
+}
+.av-tier-mastery .av-aura::before {
+  content: "";
+  position: absolute; inset: -2px; border-radius: calc(var(--av-radius) + 1px); padding: 1.5px;
+  background: conic-gradient(from 0deg,
+    transparent 0 6%, color-mix(in srgb, var(--av-color) 85%, white) 11%, transparent 16% 30%,
+    var(--p2) 34%, transparent 39% 55%, color-mix(in srgb, var(--av-color) 72%, white) 60%,
+    transparent 66% 82%, color-mix(in srgb, var(--av-color) 55%, transparent) 88%, transparent 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: drop-shadow(0 0 4px var(--av-color));
+  animation: avHaloSpin 8.5s linear infinite;
+}
+.av-tier-mastery .av-aura::after {
+  content: "";
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(114deg, transparent 42%, rgba(255, 255, 255, .2) 48%, transparent 55%);
+  background-size: 240% 100%;
+  mix-blend-mode: screen;
+  animation: avSheen 7.2s ease-in-out infinite;
+}
+
 .av-shell.frame-none { padding: 0; border-radius: 7px; box-shadow: inset 0 0 0 1px rgba(201, 164, 92, .28); }
 .av-shell.frame-none .av-img { border-radius: 7px; }
 
-/* 主题边框：贴着头像的一圈金属/能量边，不旋转 */
+/* 主题边框：贴着头像的一圈金属/能量边 */
 .av-shell[class*="frame-"]:not(.frame-none) {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ring-accent) 22%, transparent), 0 0 16px var(--halo);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ring-accent) 22%, transparent), 0 0 18px var(--halo);
 }
 .av-shell[class*="frame-"]:not(.frame-none)::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 7;
   border-radius: inherit;
   padding: clamp(1.5px, calc(var(--av-size, 40px) * .022), 3px);
   background: var(--ring-grad);
@@ -57,12 +113,12 @@
           mask-composite: exclude;
   filter: drop-shadow(0 0 4px var(--ring-glow));
 }
-/* 四角铆钉 */
+/* 四角铆钉 / 几何角标 */
 .av-shell[class*="frame-"]:not(.frame-none)::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 7;
   border-radius: inherit;
   background:
     radial-gradient(circle at 0 0, var(--ring-accent) 0 1.4px, transparent 2.6px),
@@ -71,7 +127,59 @@
     radial-gradient(circle at 100% 100%, var(--ring-accent) 0 1.4px, transparent 2.6px);
   opacity: .9;
 }
-/* 粒子：沿边框分布的细碎光尘，只做明暗呼吸，不做旋转 */
+
+/* 环绕星环：细光弧持续旋转 */
+.av-ring {
+  inset: -9%;
+  z-index: 2;
+  border-radius: 50%;
+  opacity: .9;
+  background: conic-gradient(from 0deg,
+    transparent 0 5%, var(--ring-accent) 7%, transparent 10% 19%,
+    color-mix(in srgb, var(--p2) 80%, transparent) 22%, transparent 25% 38%,
+    var(--ring-accent) 41%, transparent 44% 57%,
+    color-mix(in srgb, var(--p1) 75%, transparent) 61%, transparent 64% 78%,
+    var(--ring-accent) 82%, transparent 85% 94%, var(--p1) 97%, transparent 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.8px), #000 calc(100% - 1.2px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 1.8px), #000 calc(100% - 1.2px));
+  filter: drop-shadow(0 0 4px var(--ring-glow));
+  animation: avRingSpin 17s linear infinite;
+}
+.av-ring::before {
+  content: "";
+  position: absolute; inset: 8%;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--ring-accent) 46%, transparent);
+  opacity: .55;
+  animation: avRingSpinR 27s linear infinite;
+}
+
+/* 环绕粒子：多层不同半径、不同方向 */
+.av-orbit {
+  inset: -16%;
+  z-index: 6;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: .95;
+  background:
+    radial-gradient(circle at 50% 1.4%, var(--p2) 0 calc(var(--av-size, 40px) * .019), transparent calc(var(--av-size, 40px) * .028)),
+    radial-gradient(circle at 97% 44%, var(--p1) 0 calc(var(--av-size, 40px) * .014), transparent calc(var(--av-size, 40px) * .024)),
+    radial-gradient(circle at 7% 64%, var(--p1) 0 calc(var(--av-size, 40px) * .017), transparent calc(var(--av-size, 40px) * .027)),
+    radial-gradient(circle at 63% 98%, var(--p2) 0 calc(var(--av-size, 40px) * .012), transparent calc(var(--av-size, 40px) * .022));
+  animation: avOrbit 14s linear infinite;
+}
+.av-orbit::before {
+  content: "";
+  position: absolute; inset: 11%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 18% 8%, var(--p2) 0 calc(var(--av-size, 40px) * .012), transparent calc(var(--av-size, 40px) * .022)),
+    radial-gradient(circle at 92% 76%, var(--p1) 0 calc(var(--av-size, 40px) * .015), transparent calc(var(--av-size, 40px) * .026)),
+    radial-gradient(circle at 38% 96%, var(--p1) 0 calc(var(--av-size, 40px) * .01), transparent calc(var(--av-size, 40px) * .02));
+  animation: avOrbitR 21s linear infinite;
+}
+
+/* 贴边光尘：只做明暗呼吸与轻微浮动，不遮挡脸部 */
 .av-fx {
   inset: -9%;
   z-index: 4;
@@ -84,14 +192,24 @@
     radial-gradient(circle at 92% 82%, var(--p2) 0 calc(var(--av-size, 40px) * .017), transparent calc(var(--av-size, 40px) * .032)),
     radial-gradient(circle at 50% 0%, var(--p2) 0 calc(var(--av-size, 40px) * .011), transparent calc(var(--av-size, 40px) * .024)),
     radial-gradient(circle at 0% 50%, var(--p1) 0 calc(var(--av-size, 40px) * .013), transparent calc(var(--av-size, 40px) * .028)),
-    radial-gradient(circle at 100% 52%, var(--p1) 0 calc(var(--av-size, 40px) * .015), transparent calc(var(--av-size, 40px) * .03));
-  animation: avTwinkle 5.2s ease-in-out infinite;
+    radial-gradient(circle at 100% 52%, var(--p1) 0 calc(var(--av-size, 40px) * .015), transparent calc(var(--av-size, 40px) * .03)),
+    radial-gradient(circle at 22% 4%, var(--p2) 0 calc(var(--av-size, 40px) * .008), transparent calc(var(--av-size, 40px) * .018)),
+    radial-gradient(circle at 78% 6%, var(--p1) 0 calc(var(--av-size, 40px) * .009), transparent calc(var(--av-size, 40px) * .019)),
+    radial-gradient(circle at 4% 34%, var(--p2) 0 calc(var(--av-size, 40px) * .007), transparent calc(var(--av-size, 40px) * .016)),
+    radial-gradient(circle at 96% 66%, var(--p2) 0 calc(var(--av-size, 40px) * .008), transparent calc(var(--av-size, 40px) * .017));
+  animation: avDust 6.8s ease-in-out infinite;
 }
-/* 底部徽记 */
+.av-tier-mastery .av-fx {
+  opacity: 1;
+  animation-duration: 5.2s;
+  filter: drop-shadow(0 0 3px var(--av-color));
+}
+
+/* 底部徽记（精通框使用框体自带徽章，不再叠加） */
 .av-gem {
   left: 50%;
   bottom: calc(var(--av-size, 40px) * -.045);
-  z-index: 5;
+  z-index: 8;
   width: clamp(8px, calc(var(--av-size, 40px) * .15), 24px);
   height: clamp(8px, calc(var(--av-size, 40px) * .15), 24px);
   transform: translateX(-50%) rotate(45deg);
@@ -104,46 +222,74 @@
   color: #17101f;
 }
 .av-gem svg { width: 60%; height: 60%; transform: rotate(-45deg); }
-/* 精通框：双侧龙翼 */
-.av-wings {
+
+/* 精通框：生成式职业星冕，覆盖在头像外圈，中心镂空 */
+.av-shell[class*="frame-mastery_"] {
+  --frame-w: 124%;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+.av-shell[class*="frame-mastery_"] .av-img { border-radius: var(--av-radius); }
+.av-frame-art {
+  position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 0;
-  width: var(--wing-w, 240%);
+  z-index: 3;
+  width: var(--frame-w, 152%);
+  max-width: none;
   height: auto;
-  aspect-ratio: 220 / 100;
   transform: translate(-50%, -50%);
-  color: var(--av-color);
-  overflow: visible;
-  opacity: .95;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--av-color) 70%, transparent));
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: screen;
+  opacity: .96;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--av-color) 55%, transparent));
+  animation: avBreath 7.5s ease-in-out infinite;
 }
-.av-wings .av-wing-set.back { opacity: .34; transform: translateY(-2.5px) scale(1.05); transform-origin: 50% 62%; }
-.av-wings .av-wing-set.main path { fill: var(--wing-fill, currentColor); fill-opacity: .88; }
-.av-wings .av-wing-set.back path { fill: var(--wing-fill, currentColor); fill-opacity: .5; }
-.av-wings .av-wing-set.main > path:not(.av-wing-bone) { stroke: rgba(255, 255, 255, .22); stroke-width: .8; vector-effect: non-scaling-stroke; }
-.av-wings .av-wing-bone { fill: none; stroke: rgba(255, 255, 255, .6); stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.av-shell[class*="frame-mastery_"] .av-gem {
-  width: clamp(16px, calc(var(--av-size, 40px) * .24), 38px);
-  height: clamp(16px, calc(var(--av-size, 40px) * .24), 38px);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  color: #fff;
-  background:
-    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, .55), transparent 38%),
-    radial-gradient(circle at 50% 60%, var(--av-color), #140b20 78%);
-  border-color: color-mix(in srgb, var(--av-color) 70%, white);
-  box-shadow: 0 0 10px var(--av-color), inset 0 0 6px rgba(0, 0, 0, .35);
-}
-.av-shell[class*="frame-mastery_"] .av-gem svg { transform: none; width: 58%; height: 58%; filter: drop-shadow(0 0 2px rgba(255, 255, 255, .8)); }
-/* 小尺寸（侧栏、列表）只保留边框与粒子，避免龙翼遮挡文字 */
+.cos-art .av-frame-art { width: var(--frame-w, 152%); height: auto; object-fit: contain; }
+.av-shell[class*="frame-mastery_"] .av-ring { display: none; }
+.av-shell[class*="frame-mastery_"] .av-orbit { inset: -27%; }
+.av-shell[class*="frame-mastery_"] .av-gem { display: none; }
+.av-shell[class*="frame-mastery_"]::after { display: none; }
+
+/* 小尺寸（侧栏、列表）：保留轻量边框/阶段光，隐藏重特效 */
 .av-shell.av-mini { --av-radius: 8px; }
-.av-shell.av-mini .av-wings,
-.av-shell.av-mini .av-gem { display: none; }
+.av-shell.av-mini .av-gem,
+.av-shell.av-mini .av-ring,
+.av-shell.av-mini .av-orbit,
+.av-shell.av-mini .av-frame-art,
+.av-shell.av-mini .av-fx { display: none; }
+.av-shell.av-mini.av-tier-s2 { box-shadow: 0 0 0 1px color-mix(in srgb, var(--av-color) 55%, transparent), 0 0 8px color-mix(in srgb, var(--av-color) 28%, transparent); }
+.av-shell.av-mini.av-tier-mastery { box-shadow: 0 0 0 1px var(--av-color), 0 0 10px color-mix(in srgb, var(--av-color) 55%, transparent); }
 
 @keyframes avTwinkle { 0%, 100% { opacity: .4; } 50% { opacity: .95; } }
+@keyframes avDust {
+  0%, 100% { opacity: .5; transform: translateY(0); }
+  40% { opacity: 1; }
+  50% { opacity: .9; transform: translateY(-1.5%); }
+}
+@keyframes avAuraPulse {
+  0%, 100% { opacity: .45; }
+  50% { opacity: .9; }
+}
+@keyframes avHaloSpin { to { transform: rotate(360deg); } }
+@keyframes avRingSpin { to { transform: rotate(360deg); } }
+@keyframes avRingPulse { 0%, 100% { opacity: .72; } 50% { opacity: 1; } }
+@keyframes avRingHue { 0%, 100% { filter: drop-shadow(0 0 6px rgba(192, 147, 255, .7)) hue-rotate(0deg); } 50% { filter: drop-shadow(0 0 10px rgba(111, 232, 255, .85)) hue-rotate(28deg); } }
+@keyframes avRingSpinR { to { transform: rotate(-360deg); } }
+@keyframes avOrbit { to { transform: rotate(360deg); } }
+@keyframes avOrbitR { to { transform: rotate(-360deg); } }
+@keyframes avSheen {
+  0%, 100% { background-position: 180% 0; opacity: 0; }
+  12% { opacity: .9; }
+  46% { opacity: .55; }
+  60% { opacity: 0; }
+}
+@keyframes avBreath { 0%, 100% { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--av-color) 48%, transparent)); } 50% { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--av-color) 78%, transparent)); } }
 
-/* 青铜：铜纹边饰 + 微尘 */
+/* 青铜：菱形双线框 + 铜尘 */
 .av-shell.frame-bronze {
   --ring-grad: linear-gradient(145deg, #f0cfa0, #b07a45 28%, #5f3c21 52%, #e0b077 76%, #8a5a32);
   --ring-accent: #e5b982;
@@ -152,8 +298,27 @@
   --p1: rgba(240, 207, 160, .9);
   --p2: rgba(255, 241, 220, .75);
 }
+.av-shell.frame-bronze .av-ring {
+  inset: -11%;
+  border-radius: 4px;
+  background: none;
+  border: 1px solid rgba(229, 185, 130, .55);
+  box-shadow: inset 0 0 0 3px rgba(95, 60, 33, .28);
+  filter: drop-shadow(0 0 4px rgba(185, 146, 95, .5));
+  -webkit-mask: none;
+          mask: none;
+  transform: rotate(45deg);
+  animation: avDiamondSpin 34s linear infinite;
+}
+.av-shell.frame-bronze .av-ring::before {
+  inset: 7%;
+  border-radius: 2px;
+  border-style: solid;
+  opacity: .45;
+  animation: none;
+}
 
-/* 鎏金：鎏金边饰 + 金屑 */
+/* 鎏金：放射日冕 + 金屑 */
 .av-shell.frame-gold {
   --ring-grad: linear-gradient(145deg, #fff3c4, #e5c27a 32%, #a87b2e 52%, #ffe9a8 72%, #c79a45);
   --ring-accent: #ffe3a1;
@@ -163,8 +328,23 @@
   --p2: #fff8df;
 }
 .av-shell.frame-gold .av-gem { border-radius: 1px; }
+.av-shell.frame-gold .av-ring {
+  inset: -14%;
+  border-radius: 9px;
+  padding: 3px;
+  background: repeating-conic-gradient(from 0deg,
+    rgba(255, 227, 161, .85) 0deg 1.2deg,
+    transparent 1.2deg 8deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: drop-shadow(0 0 8px rgba(229, 194, 122, .55));
+  animation: avRingPulse 5.2s ease-in-out infinite;
+}
+.av-shell.frame-gold .av-ring::before { display: none; }
 
-/* 星辉长夜：星环边饰 + 星屑 */
+/* 星辉长夜：双轨椭圆星环 + 星屑 */
 .av-shell.frame-starlight {
   --ring-grad: linear-gradient(145deg, #eaf5ff, #8fc8ff 34%, #315f9e 58%, #d7ecff 80%, #6aa3e0);
   --ring-accent: #cfe9ff;
@@ -173,8 +353,24 @@
   --p1: #bfe0ff;
   --p2: #ffffff;
 }
+.av-shell.frame-starlight .av-ring {
+  inset: -12%;
+  border-radius: 10px;
+  background: none;
+  border: 1px solid rgba(191, 224, 255, .6);
+  filter: drop-shadow(0 0 5px rgba(126, 190, 255, .6));
+  -webkit-mask: none;
+          mask: none;
+  animation: none;
+}
+.av-shell.frame-starlight .av-ring::before {
+  inset: 4px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, .42);
+  opacity: .8;
+}
 
-/* 深渊回响：暗紫辉光 + 幽焰 */
+/* 深渊回响：呼吸虚焰环 + 幽焰 */
 .av-shell.frame-abyss {
   --ring-grad: linear-gradient(145deg, #d0a6f5, #7a48ad 32%, #241431 58%, #a875d6 80%, #4a2a6a);
   --ring-accent: #d9b8ff;
@@ -183,8 +379,19 @@
   --p1: #c38cff;
   --p2: #f0dcff;
 }
+.av-shell.frame-abyss .av-ring {
+  inset: -13%;
+  border-radius: 12px;
+  background: none;
+  border: 2px solid rgba(195, 140, 255, .34);
+  filter: blur(1.2px) drop-shadow(0 0 10px rgba(150, 94, 208, .75));
+  -webkit-mask: none;
+          mask: none;
+  animation: avAbyss 7.6s ease-in-out infinite;
+}
+.av-shell.frame-abyss .av-ring::before { display: none; }
 
-/* 星网织环：双色织环 + 节点光点 */
+/* 星网织环：双色交织椭圆 + 节点光点 */
 .av-shell.frame-social {
   --ring-grad: linear-gradient(145deg, #b8e6ff, #5ff0d6 30%, #2b7a8a 55%, #9fe6ff 78%, #3aa6c9);
   --ring-accent: #a9f0e8;
@@ -193,8 +400,25 @@
   --p1: #6fe8ff;
   --p2: #9ff5e4;
 }
+.av-shell.frame-social .av-ring {
+  inset: -12%;
+  border-radius: 10px;
+  background: none;
+  border: 1px solid rgba(111, 232, 255, .6);
+  filter: drop-shadow(0 0 5px rgba(95, 240, 214, .5));
+  -webkit-mask: none;
+          mask: none;
+  animation: none;
+}
+.av-shell.frame-social .av-ring::before {
+  inset: 4px;
+  border-radius: 7px;
+  border: 1px solid rgba(159, 245, 228, .6);
+  opacity: .8;
+  animation: none;
+}
 
-/* 画境之框：纸纹边饰 + 暖光 */
+/* 画境之框：Art Deco 双层方框 + 暖光 */
 .av-shell.frame-banner {
   --ring-grad: linear-gradient(145deg, #f8efd8, #d9b98a 40%, #8a6a44 60%, #f1dfba 82%, #b08c5e);
   --ring-accent: #f0dcb4;
@@ -204,8 +428,26 @@
   --p2: #fff5dd;
 }
 .av-shell.frame-banner::before { background-image: var(--ring-grad), repeating-linear-gradient(135deg, rgba(255, 255, 255, .1) 0 2px, transparent 2px 6px); }
+.av-shell.frame-banner .av-ring {
+  inset: -8%;
+  border-radius: 3px;
+  background: none;
+  border: 1px solid rgba(240, 220, 180, .55);
+  box-shadow: inset 0 0 0 3px rgba(201, 164, 92, .1);
+  -webkit-mask: none;
+          mask: none;
+  filter: none;
+  animation: none;
+}
+.av-shell.frame-banner .av-ring::before {
+  inset: 4px;
+  border-radius: 1px;
+  border-style: solid;
+  opacity: .45;
+  animation: none;
+}
 
-/* 源核棱镜：棱镜边饰 + 晶屑 */
+/* 源核棱镜：旋转光谱棱环 + 晶屑 */
 .av-shell.frame-origin {
   --ring-grad: linear-gradient(120deg, #ff8a9a, #ffd57e 22%, #5ff0d6 45%, #6fb9ff 65%, #c093ff 85%, #ff8a9a);
   --ring-accent: #f4ecff;
@@ -214,8 +456,21 @@
   --p1: #ffd57e;
   --p2: #a8e8ff;
 }
+.av-shell.frame-origin .av-ring {
+  inset: -11%;
+  border-radius: 12px;
+  padding: 2px;
+  background: conic-gradient(from 30deg, #ff8a9a, #ffd57e 18%, #5ff0d6 38%, #6fb9ff 58%, #c093ff 78%, #ff8a9a);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: drop-shadow(0 0 7px rgba(192, 147, 255, .8));
+  animation: avRingHue 9s ease-in-out infinite;
+}
+.av-shell.frame-origin .av-ring::before { display: none; }
 
-/* 职业精通框：职业色边框 + 粒子 + 双侧龙翼 */
+/* 职业精通框：职业色星环 + 生成式星冕 + 环绕粒子 */
 .av-shell[class*="frame-mastery_"] {
   --ring-grad: linear-gradient(145deg,
     color-mix(in srgb, var(--av-color) 62%, white),
@@ -228,29 +483,35 @@
   --halo: color-mix(in srgb, var(--av-color) 44%, transparent);
   --p1: color-mix(in srgb, var(--av-color) 72%, white);
   --p2: rgba(255, 255, 255, .92);
+  --frame-w: 124%;
 }
-.av-shell[class*="frame-mastery_"]::after { opacity: 1; }
 
-/* 档案大头像与外壳对齐：允许龙翼向外延伸 */
+/* 档案大头像与外壳对齐：方形星冕贴着方头像向外延展 */
 .av-shell.pf-avatar {
   --av-radius: 14px;
-  --wing-w: 200%;
+  --frame-w: 128%;
   overflow: visible;
   border: 0;
   background: rgba(10, 8, 14, .5);
   box-shadow: 0 24px 48px rgba(0, 0, 0, .5);
 }
 .av-shell.pf-avatar .av-img { border-radius: 10px; image-rendering: auto; }
+.pf-avatar .av-frame-art { width: var(--frame-w, 128%); height: auto; object-fit: contain; image-rendering: auto; }
 .pf-id { overflow: visible; }
-/* 预览卡与编辑弹窗：龙翼收在容器内，避免被硬裁 */
-.id-preview .av-shell { --wing-w: 200%; }
-.av-shell.av-fr-demo { --wing-w: 192%; }
-@media (max-width: 1240px) { .av-shell.pf-avatar { --wing-w: 190%; } }
-@media (max-width: 1080px) { .av-shell.pf-avatar { --wing-w: 170%; } }
-@media (max-width: 860px) { .av-shell.pf-avatar { --wing-w: 190%; } }
+/* 预览卡与编辑弹窗：星冕收在容器内，避免被硬裁 */
+.id-preview .av-shell { --frame-w: 126%; }
+.av-shell.av-fr-demo { --frame-w: 120%; }
+@media (max-width: 1240px) { .av-shell.pf-avatar { --frame-w: 126%; } }
+@media (max-width: 1080px) { .av-shell.pf-avatar { --frame-w: 122%; } }
+@media (max-width: 860px) { .av-shell.pf-avatar { --frame-w: 126%; } }
 .av-shell.apc-av { width: 46px; height: 46px; }
 .av-shell.fc-av { width: 58px; height: 58px; }
 
+@keyframes avDiamondSpin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+@keyframes avAbyss {
+  0%, 100% { transform: scale(.97) rotate(0deg); opacity: .55; }
+  50% { transform: scale(1.03) rotate(7deg); opacity: .95; }
+}
 /* ── 头像悬浮卡 ──────────────────────────────────────── */
 .av-pop-wrap { position: relative; display: inline-flex; flex: 0 0 auto; color: inherit; text-decoration: none; }
 .av-pop-dot {
@@ -713,5 +974,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .av-fx, .av-wings, .av-shell::before, .av-shell::after, .title-chip::before, .title-chip::after { animation: none !important; }
+  .av-fx, .av-ring, .av-orbit, .av-aura, .av-frame-art,
+  .av-shell::before, .av-shell::after, .title-chip::before, .title-chip::after { animation: none !important; }
 }
