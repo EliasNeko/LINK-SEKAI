@@ -357,9 +357,14 @@
       S.online = true;
       return true;
     } catch (err) {
-      if (err.code === 'state_conflict' && err.data && err.data.state) {
-        const remoteVersion = Math.max(0, Number(err.data.stateVersion) || 0);
-        const merged = mergeState(err.data.state, payload);
+      /* 服务端冲突回包把最新存档放在 data（旧实现字段名为 state），两种都要认，
+         否则会停在冲突里反复重推，既拉不到云端也不肯放弃本地。 */
+      const conflict = err.code === 'state_conflict' ? (err.data || {}) : null;
+      const remoteState = conflict ? (conflict.data || conflict.state) : null;
+      if (conflict && remoteState && typeof remoteState === 'object' && !Array.isArray(remoteState)
+        && Object.keys(remoteState).length) {
+        const remoteVersion = Math.max(0, Number(conflict.stateVersion) || 0);
+        const merged = mergeState(remoteState, payload);
         const current = LS.store.current();
         if (current) {
           LS.store.db.users[current.uid] = Object.assign({}, merged, {
@@ -374,6 +379,7 @@
           try { LS.store.save(); } finally { S.suppress = false; }
           S.version = remoteVersion;
           S.dirty = true;
+          S.online = true;
           toastOnce('merge', '已合并两台设备的进度', '星轨进度取并集，装备与星辉保留较高的一份。', 'gold');
           setTimeout(() => { push(); }, 400);
         }
