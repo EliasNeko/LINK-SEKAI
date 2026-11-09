@@ -2740,6 +2740,36 @@ pre.code-block, .code-block-wrap pre.code-block {
 .gear-slots span { display: block; font-size: 7.2px; color: var(--faint); }
 .gear-slots b { display: block; margin-top: 1px; font-size: 9px; color: #d9c9ab; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gear-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 7px; padding-top: 6px; border-top: 1px dashed var(--line); font-size: 7.8px; color: var(--faint); }
+.gear-three { display: grid; gap: 6px; margin: 4px 0 8px; }
+.gear-tile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .015);
+}
+.gear-tile.on { border-color: color-mix(in srgb, var(--q-color) 34%, var(--line)); background: color-mix(in srgb, var(--q-color) 5%, rgba(255, 255, 255, .012)); }
+.gear-tile.empty { opacity: .68; }
+.gear-tile .gt-art { width: 38px; height: 38px; }
+.gt-copy { flex: 1; min-width: 0; }
+.gt-copy em { display: block; font-style: normal; font-size: 6.8px; letter-spacing: .1em; color: var(--faint); }
+.gt-copy b { display: block; font-family: var(--font-serif); font-size: 10.5px; color: #e6d8bd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gt-copy span { display: block; font-size: 7.4px; color: var(--q-color, var(--faint)); }
+.gt-copy i { display: block; margin-top: 2px; font-style: normal; font-size: 7.4px; line-height: 1.5; color: #b9a67f; white-space: normal; word-break: break-word; }
+.gt-copy i.gt-inf { color: #ff8fd4; }
+.gear-total { padding-top: 7px; border-top: 1px dashed var(--line); }
+.gt-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; font-family: var(--font-display); font-size: 7px; letter-spacing: .12em; color: var(--faint); }
+.gt-head em { font-style: normal; letter-spacing: .04em; color: #c9a45c; }
+.gt-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.gt-chips span { display: inline-flex; align-items: baseline; gap: 3px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 99px; font-size: 7.4px; color: var(--faint); }
+.gt-chips em { font-style: normal; }
+.gt-chips b { color: #e2cfa6; }
+.gear-battle { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 7px; }
+.gear-battle > div { padding: 5px 7px; border: 1px solid var(--line); border-radius: 4px; background: rgba(255, 255, 255, .015); }
+.gear-battle span { display: block; font-size: 7.2px; color: var(--faint); }
+.gear-battle b { display: block; margin-top: 1px; font-size: 9px; color: #d9c9ab; }
 .side-loot { display: flex; align-items: center; gap: 9px; margin: 5px 0; }
 .sl-icon { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--q-color); border-radius: 5px; color: var(--q-color); font-size: 14px; background: color-mix(in srgb, var(--q-color) 6%, transparent); }
 .side-loot b { display: block; font-size: 11px; color: #e6d8bd; }

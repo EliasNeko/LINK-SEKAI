@@ -267,7 +267,7 @@ window.LS = window.LS || {};
   };
 
   /* 装备效果：三类装备（武器 / 服饰 / 道具）各自三套角色装备栏。
-     同类效果不叠加，取三件中的最高值；不同类型可以同时生效。
+     三栏效果叠加生效；提示 / 残影 / 护盾等次数设有总上限。
      atk/def/luck/xp/coin 为数值；hint/ghost/guard 为功能次数。 */
   const STAT_KEYS = ['atk', 'def', 'hint', 'ghost', 'luck', 'xp', 'coin', 'guard'];
   LS.STAT_KEYS = STAT_KEYS;

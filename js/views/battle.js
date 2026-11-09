@@ -550,15 +550,32 @@
 
     <div class="side-card duel-gear-card">
       <div class="kicker-jp">EQUIPMENT · 当前装备</div>
-      <div class="gear-main">
-        <span class="gear-weapon">${LS.weaponImg(lang.id, gear.weaponQuality, 56, '', gear.weaponLabel)}</span>
-        <div><b>${LS.esc(gear.weaponLabel)}</b><span class="${gear.weaponInfusion ? 'q-infused' : ''}">${LS.qualityOf(gear.weaponQuality, gear.weaponInfusion).name} · 手持武器</span></div>
+      <div class="gear-three">
+        ${[['weapon', gear.weapon], ['apparel', gear.armor], ['item', gear.relic]].map(([cat, it]) => {
+          const q = it ? LS.qualityOf(it.quality, it.infusion) : null;
+          const inf = it ? LS.infusionOf(it) : 0;
+          const lines = it ? LS.statsLine(LS.statsOfItem(it), true) : '空栏 · 暂无加成';
+          const infText = inf ? `魔能 ${LS.ROMAN[inf]} · 装备数值 +${Math.round((Math.pow(LS.INFUSION_MULT, inf) - 1) * 100)}%` : '';
+          return `<div class="gear-tile ${it ? 'on' : 'empty'}" style="${q ? `--q-color:${q.color};--q-glow:${q.glow}` : ''}">
+            ${it ? LS.itemArtHTML(it, 'gt-art', it.name) : `<span class="item-art gt-art is-text"><em>${LS.CAT_ICONS[cat]}</em></span>`}
+            <div class="gt-copy">
+              <em>${SLOT_LABEL[cat]}栏</em>
+              <b>${it ? LS.esc(it.name) : '未装备'}</b>
+              <span class="${q && q.infused ? 'q-infused' : ''}">${q ? LS.esc(q.name) : '空栏'}</span>
+              <i>${LS.esc(lines)}</i>
+              ${infText ? `<i class="gt-inf">${LS.esc(infText)}</i>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
       </div>
-      <div class="gear-slots">
-        <div><span>武器</span><b>${LS.esc(gear.weaponLabel)}</b></div>
-        <div><span>服饰</span><b>${LS.esc(gear.armorLabel)}</b></div>
-        <div><span>道具</span><b>${LS.esc(gear.relicLabel)}</b></div>
-        <div><span>攻击 / 防御</span><b>+${gear.atk} / +${gear.def}</b></div>
+      <div class="gear-total">
+        <div class="gt-head"><span>三件合计 · STACKED</span><em>效果叠加生效</em></div>
+        <div class="gt-chips">
+          ${['atk', 'def', 'luck', 'xp', 'coin'].map(k => `<span><em>${LS.STAT_LABEL[k]}</em><b>+${gear.stats[k] || 0}${LS.STAT_UNIT[k] || ''}</b></span>`).join('')}
+          ${['hint', 'ghost', 'guard'].filter(k => gear.stats[k]).map(k => `<span><em>${LS.STAT_LABEL[k]}</em><b>+${gear.stats[k]}${LS.STAT_UNIT[k] || ''}</b></span>`).join('')}
+        </div>
+      </div>
+      <div class="gear-battle">
         <div><span>剩余护盾</span><b>${state.guardLeft || 0} 次失误</b></div>
         <div><span>本题提示</span><b>${state.hintsShown || 0} / ${Math.min(gear.hintMax, (q.hints || []).length)} 条</b></div>
       </div>

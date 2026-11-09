@@ -294,7 +294,7 @@
           <p class="sd-lore">${LS.esc(it.lore)}</p>
           <div class="gear-stats">${rows}</div>
           ${langPicker}
-          <div class="sd-meta" style="margin-top:10px"><span class="chip">需要 Lv.${it.levelReq}</span><span class="chip">${coinHTML(it.price)}</span><span class="chip">同效果取最高</span></div>
+          <div class="sd-meta" style="margin-top:10px"><span class="chip">需要 Lv.${it.levelReq}</span><span class="chip">${coinHTML(it.price)}</span><span class="chip">三栏叠加</span></div>
         </div>
       </div>
       <div class="modal-actions">

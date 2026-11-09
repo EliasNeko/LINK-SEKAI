@@ -95,7 +95,7 @@
         ${it ? `<i class="ls-q ${q.infused ? 'q-infused' : ''}" style="color:${q.color}">${q.name}</i>` : ''}
       </button>`;
     }).join('')}</div>
-    <p class="armory-note">${LS.esc(lang ? lang.name + ' · ' + lang.profession : '当前职业')} 专属三栏。同一效果类型不叠加，只取三件装备中的最高值。</p>`;
+    <p class="armory-note">${LS.esc(lang ? lang.name + ' · ' + lang.profession : '当前职业')} 专属三栏。三件装备的同类效果叠加生效，提示 / 残影 / 护盾设有总上限。</p>`;
 
     const cards = list.length ? `<div class="armory-sub">当前职业可用 · ${fitsGear.length} 件 / 全部 ${list.length} 件</div><div class="gear-grid">${list.map(e => {
       const q = gearQuality(e);
@@ -444,7 +444,7 @@
           <div class="kicker-jp">${SLOT[cat]} · ${LS.esc(lang ? lang.name + ' · ' + lang.profession : '通用')}</div>
           <p>${LS.esc(item.lore || '')}</p>
           <div class="gear-stats" style="margin-top:10px">${rows}</div>
-          <div class="gd-hints">同类型效果取最高值，不重复叠加${inf ? ' · 注入阶位 ' + LS.ROMAN[inf] : ''} · 获得于 ${LS.esc(LS.fmtDate(item.obtainedAt))}</div>
+          <div class="gd-hints">三栏同类效果叠加${inf ? ' · 注入阶位 ' + LS.ROMAN[inf] : ''} · 获得于 ${LS.esc(LS.fmtDate(item.obtainedAt))}</div>
         </div>
       </div>
       <div class="modal-actions">

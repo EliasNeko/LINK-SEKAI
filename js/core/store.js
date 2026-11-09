@@ -384,8 +384,12 @@
       const total = LS.emptyStats();
       this.equippedItems(user, langId).forEach(e => {
         const s = LS.statsOfItem(e);
-        LS.STAT_KEYS.forEach(k => { total[k] = Math.max(total[k] || 0, s[k] || 0); });
+        LS.STAT_KEYS.forEach(k => { total[k] = (total[k] || 0) + (s[k] || 0); });
       });
+      /* 武器 / 服饰 / 道具三栏效果叠加；功能次数设总上限，避免无限堆叠。 */
+      total.hint = Math.min(8, total.hint || 0);
+      total.ghost = Math.min(6, total.ghost || 0);
+      total.guard = Math.min(8, total.guard || 0);
       return total;
     },
 
@@ -611,9 +615,17 @@
     /* 演示账号/ NPC 的装备栏自修复：只处理 isNPC，绝不动真实玩家存档。 */
     repairDemoLoadout(u) {
       if (!u || !u.isNPC || !Array.isArray(u.equipment) || !u.equipment.length) return false;
-      const any = CATS.some(c => (u.activeLangs || []).some(l => loadoutOf(u, l)[c]));
-      if (any) return false;
       let changed = false;
+      /* 早期演示装备没有实例 id；补上后，失效的装备栏引用才能被正确修复。 */
+      u.equipment.forEach(e => { if (!e.iid) { e.iid = LS.rid('eq'); changed = true; } });
+      (u.activeLangs || []).forEach(l => {
+        const lo = loadoutOf(u, l);
+        CATS.forEach(c => {
+          if (lo[c] && !u.equipment.some(e => e.iid === lo[c])) { lo[c] = null; changed = true; }
+        });
+      });
+      const any = CATS.some(c => (u.activeLangs || []).some(l => loadoutOf(u, l)[c]));
+      if (any) { if (changed) this.save(); return changed; }
       u.equipment.forEach(e => {
         const cat = e.cat || CAT_MAP[e.slot] || 'item';
         const lang = (e.langs || []).includes('all')
@@ -649,6 +661,7 @@
       });
       const gear = LS.makeLoot ? LS.makeLoot('rare', '月影苦无', 'weapon', 'ku', '刃身映出尚未写下的代码。', 'python') : null;
       if (gear) {
+        gear.iid = gear.iid || 'demo-eq-weapon';
         gear.cat = gear.cat || 'weapon';
         gear.slot = gear.cat;
         gear.langs = gear.langs || ['python'];
