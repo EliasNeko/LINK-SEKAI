@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/site.css?v=2.9.3d" />
+  <link rel="stylesheet" href="/css/site.css?v=2.9.4b" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -32,9 +32,10 @@
       <nav class="nav-links" id="navLinks" aria-label="站内导航">
         <a href="#world"><i>01</i>世界观</a>
         <a href="#operators"><i>02</i>六职业</a>
-        <a href="#system"><i>03</i>系统</a>
-        <a href="#download"><i>04</i>下载</a>
-        <a href="#archive"><i>05</i>视觉档案</a>
+        <a href="#cg"><i>03</i>序章 CG</a>
+        <a href="#system"><i>04</i>系统</a>
+        <a href="#download"><i>05</i>下载</a>
+        <a href="#archive"><i>06</i>视觉档案</a>
       </nav>
       <div class="nav-actions">
         <a class="nav-play" href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener">进入游戏 <span>↗</span></a>
@@ -71,8 +72,9 @@
             <a class="btn btn-gold" href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener"><span>开始游戏</span><i>→</i></a>
             <a class="btn btn-line" href="#download"><span>下载客户端</span><i>↓</i></a>
           </div>
+          <a class="hero-cg" href="#cg"><span class="hero-cg-dot" aria-hidden="true"></span>观看序章 CG · 25s<i>▷</i></a>
           <ul class="hero-meta reveal">
-            <li><b>v2.9.3</b><span>星港门户</span></li>
+            <li><b>v2.9.4</b><span>编译塔的黎明</span></li>
             <li><b>06</b><span>语言星轨</span></li>
             <li><b>CLOUD</b><span>三端同档</span></li>
             <li><b>FREE</b><span>开源项目</span></li>
@@ -97,13 +99,13 @@
     <!-- TICKER -->
     <div class="ticker" aria-hidden="true">
       <div class="ticker-track">
-        <span>V2.9.3 星港门户 · 官网入驻原地址</span><i>◆</i>
-        <span>网页游戏迁至 /play · 三端入口同步</span><i>◆</i>
-        <span>登录账号不是游戏昵称 · 请核对拼写</span><i>◆</i>
+        <span>V2.9.4 编译塔的黎明 · 序章 CG 三幕</span><i>◆</i>
+        <span>星河声场开放 · 大厅主题与战斗曲分场景调音</span><i>◆</i>
+        <span>声音设置 · 大厅与战斗可独立调音量</span><i>◆</i>
         <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
-        <span>V2.9.3 星港门户 · 官网入驻原地址</span><i>◆</i>
-        <span>网页游戏迁至 /play · 三端入口同步</span><i>◆</i>
-        <span>登录账号不是游戏昵称 · 请核对拼写</span><i>◆</i>
+        <span>V2.9.4 编译塔的黎明 · 序章 CG 三幕</span><i>◆</i>
+        <span>星河声场开放 · 大厅主题与战斗曲分场景调音</span><i>◆</i>
+        <span>声音设置 · 大厅与战斗可独立调音量</span><i>◆</i>
         <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
       </div>
     </div>
@@ -232,11 +234,96 @@
       </div>
     </section>
 
+    <!-- CG -->
+    <section class="section cg" id="cg">
+      <div class="cg-bg" aria-hidden="true">
+        <img src="assets/site/cg-bg.webp" alt="" loading="lazy" />
+        <div class="cg-bg-shade"></div>
+      </div>
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="sec-index"><i>03</i><span>CG / 序章映像</span></p>
+          <h2 class="sec-title">在世界被写坏之前，<br />有人先按下了运行。</h2>
+          <p class="sec-lead">《编译塔的黎明》· 全片 25 秒 · 三幕。六位职业者登上塔顶唤醒星门，深渊睁开一只错误的眼睛，六色编译法阵第一次并肩亮起。</p>
+        </header>
+
+        <div class="cg-stage reveal" id="cgStage">
+          <div class="cg-frame" id="cgFrame">
+            <div class="cg-layers" id="cgLayers" aria-hidden="true"></div>
+
+            <div class="cg-act" id="cgAct" aria-hidden="true"></div>
+
+            <div class="cg-cover" id="cgCover">
+              <img class="cg-poster" src="assets/site/cg-poster.webp" alt="《编译塔的黎明》序章 CG 封面：六位职业者在云端塔顶向深渊发起总攻" />
+              <div class="cg-cover-shade"></div>
+              <span class="cg-corner tl" aria-hidden="true"></span>
+              <span class="cg-corner br" aria-hidden="true"></span>
+              <div class="cg-badge">
+                <i>EP.00</i>
+                <b>编译塔的黎明</b>
+                <em>DAWN OF THE COMPILE TOWER</em>
+              </div>
+              <button class="cg-play" id="cgPlay" type="button">
+                <span class="cg-play-ring" aria-hidden="true"></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.8v14.4L20 12z" /></svg>
+                <span>播放序章映像</span>
+              </button>
+              <div class="cg-tags"><span>日本二维动画</span><span>16:9</span><span>00:25</span></div>
+            </div>
+
+            <div class="cg-hud" id="cgHud" hidden>
+              <div class="cg-chapters">
+                <button type="button" data-cg-seg="0" class="is-on"><i>01</i>黎明</button>
+                <button type="button" data-cg-seg="1"><i>02</i>深渊</button>
+                <button type="button" data-cg-seg="2"><i>03</i>总攻</button>
+              </div>
+              <div class="cg-seek" id="cgSeek" role="slider" tabindex="0" aria-label="播放进度" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+                <span class="cg-seek-fill" id="cgBar"></span>
+                <span class="cg-seek-dot" id="cgDot"></span>
+              </div>
+              <div class="cg-ctrl">
+                <button type="button" id="cgToggle" aria-label="暂停">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h4v16H7zM13 4h4v16h-4z" /></svg>
+                </button>
+                <span class="cg-time" id="cgTime">00:00 / 00:25</span>
+                <span class="cg-now" id="cgNow">第一幕 · 黎明</span>
+                <button type="button" id="cgSound" aria-label="静音">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3l5-4v14l-5-4H4z" /><path d="M16 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+                </button>
+                <button type="button" id="cgFull" aria-label="全屏观看">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="cg-side">
+            <article class="cg-note">
+              <span>01</span>
+              <h3>黎明</h3>
+              <p>云海之上，编译塔的符文一道接一道亮起。六位职业者第一次并肩站在塔顶，脚下的法阵把黎明染成青蓝色。</p>
+            </article>
+            <article class="cg-note">
+              <span>02</span>
+              <h3>深渊</h3>
+              <p>云海裂开。一只由崩坏像素与黑色触须组成的巨大眼睛缓缓睁开——那是被世界遗弃的错误，「未定义」。</p>
+            </article>
+            <article class="cg-note">
+              <span>03</span>
+              <h3>总攻</h3>
+              <p>镰刃、鬼火、宝珠、巨锤、闪电与星弓同时亮起，六色能量汇成一道光束，直指深渊。</p>
+            </article>
+            <p class="cg-credit">影像 · 音乐 / LINK-SEKAI 制作组<br /><em>建议开启声音观看</em></p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
     <!-- SYSTEM -->
     <section class="section system" id="system">
       <div class="wrap">
         <header class="sec-head reveal">
-          <p class="sec-index"><i>03</i><span>SYSTEM / 玩法与系统</span></p>
+          <p class="sec-index"><i>04</i><span>SYSTEM / 玩法与系统</span></p>
           <h2 class="sec-title">不止是课程，是一场可以反复进入的远征。</h2>
         </header>
 
@@ -285,7 +372,7 @@
       </div>
       <div class="wrap">
         <header class="sec-head center reveal">
-          <p class="sec-index"><i>04</i><span>DOWNLOAD / 下载</span></p>
+          <p class="sec-index"><i>05</i><span>DOWNLOAD / 下载</span></p>
           <h2 class="sec-title">选择你的入口。</h2>
           <p class="sec-lead">网页版即刻开始；客户端与网页共用同一套云端账号。首次进入需要注册星网通行证。</p>
         </header>
@@ -326,7 +413,7 @@
     <section class="section archive" id="archive">
       <div class="wrap">
         <header class="sec-head reveal">
-          <p class="sec-index"><i>05</i><span>ARCHIVE / 视觉档案</span></p>
+          <p class="sec-index"><i>06</i><span>ARCHIVE / 视觉档案</span></p>
           <h2 class="sec-title">把星海带走。</h2>
           <p class="sec-lead">官方站点主视觉与场景原画，提供原尺寸下载，可作桌面或手机壁纸。</p>
         </header>
@@ -367,7 +454,8 @@
     </div>
   </footer>
 
-  <script src="/js/site.js?v=2.9.3d"></script>
+  <script src="/js/site.js?v=2.9.4b"></script>
+  <script src="/js/cg.js?v=2.9.4b"></script>
   <script>
   /* 托管平台会向页面注入右下角“Made with Qoder”悬浮角标（其自带「隐藏水印」按钮）。
      手机端它正好压住底部导航，这里主动收起，并继续拦截后续重复注入。 */

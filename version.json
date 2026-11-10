@@ -1,0 +1,12 @@
+{
+  "app": "2.9.4",
+  "updated": "2026-11-11",
+  "shells": {
+    "android": "2.9.3",
+    "windows": "2.9.3"
+  },
+  "downloads": {
+    "android": "https://github.com/EliasNeko/LINK-SEKAI/releases/download/v2.9.3/link-sekai-v2.9.3.apk",
+    "windows": "https://github.com/EliasNeko/LINK-SEKAI/releases/download/v2.9.3/LINK-SEKAI-Setup-2.9.3.exe"
+  }
+}

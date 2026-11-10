@@ -43,6 +43,9 @@ def main():
         else:
             shutil.copy2(item, target)
 
+    # 三端版本自检用的清单：放在站点根，/play 也按绝对路径读取
+    shutil.copy2(ROOT / "version.json", DIST / "version.json")
+
     index = (DIST / "index.html").read_text(encoding="utf-8")
     if "/play/" not in index:
         raise SystemExit("dist/index.html 缺少 /play 入口，检查 official/index.html")

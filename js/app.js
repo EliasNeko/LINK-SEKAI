@@ -378,6 +378,7 @@
             <div class="topbar-title">${LS.esc(title || '星海大厅')}<span>${LS.esc(sub || 'LINK-SEKAI')}</span></div>
           </div>
           <div class="topbar-right">
+            <button class="audio-toggle" data-audio-open type="button" aria-pressed="true" title="声音设置" aria-label="声音设置"><span class="at-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
             <div class="top-chip hide-mobile">${LS.icon('spark')} 灵感 <b>${u.inspiration || 0}</b></div>
             <div class="top-chip">${LS.icon('gem')} <b>${LS.formatNum(u.coins || 0)}</b> 星辉</div>
             <div class="top-chip hide-mobile">${LS.icon('star')} <b>${LS.formatNum(u.xp || 0)}</b> 经验</div>

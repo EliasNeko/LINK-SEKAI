@@ -3,7 +3,7 @@
 const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
 const path = require('path');
 
-const GAME_URL = 'https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html';
+const GAME_URL = 'https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html?client=windows&cv=2.9.3';
 const ALLOWED_HOST = new URL(GAME_URL).host;
 
 let mainWindow = null;

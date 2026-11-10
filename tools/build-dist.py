@@ -90,6 +90,11 @@ def main():
             total += size
             count += 1
 
+    # 音频素材（大厅主题曲 / 战斗曲）原样复制，运行时按场景加载。
+    src_audio = os.path.join(ROOT, 'assets', 'audio')
+    if os.path.isdir(src_audio):
+        shutil.copytree(src_audio, os.path.join(DIST, 'assets', 'audio'))
+
     dist_size = 0
     largest = []
     for base, _dirs, files in os.walk(DIST):

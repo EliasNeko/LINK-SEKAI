@@ -21,7 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
-    private static final String GAME_URL = "https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html";
+    private static final String GAME_URL = "https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html?client=android&cv=2.9.3";
     private static final int FILE_CHOOSER_CODE = 4301;
 
     private WebView web;
