@@ -74,10 +74,10 @@
   }
 
   /* 下载入口：APK 优先站点内托管，EXE 走 Release 附件（安装包体积超过站点单文件上限） */
-  var RELEASE_BASE = 'https://github.com/EliasNeko/LINK-SEKAI/releases/download/v2.9.2/';
+  var RELEASE_BASE = 'https://github.com/EliasNeko/LINK-SEKAI/releases/download/v2.9.3/';
   var files = {
-    apk: { local: 'downloads/link-sekai-v2.9.2.apk', remote: RELEASE_BASE + 'link-sekai-v2.9.2.apk' },
-    exe: { remote: RELEASE_BASE + 'LINK-SEKAI-Setup-2.9.2.exe' }
+    apk: { local: 'downloads/link-sekai-v2.9.3.apk', remote: RELEASE_BASE + 'link-sekai-v2.9.3.apk' },
+    exe: { remote: RELEASE_BASE + 'LINK-SEKAI-Setup-2.9.3.exe' }
   };
   document.querySelectorAll('[data-dl]').forEach(function (btn) {
     var kind = btn.getAttribute('data-dl');

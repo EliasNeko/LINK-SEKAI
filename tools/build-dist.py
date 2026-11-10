@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""生成可直接部署的 dist/：源码原样复制，图片统一转 WebP 并按用途限尺寸。
+"""生成网页游戏包 dist/play/：源码原样复制，图片统一转 WebP 并按用途限尺寸。
 
 用法：python tools/build-dist.py
-- 只读取 assets、css、js、index.html、functions；
-- dist/ 每次整体重建；
+- 只读取 assets、css、js、index.html、manifest 与 functions；
+- 游戏固定在 dist/play/，dist 根留给官方站点（见 tools/build-portal.py）；
 - 产物满足 Qoder Sites 静态包体积限制（单文件 50MiB，总量 450MiB）。
 """
 import os
@@ -11,7 +11,7 @@ import shutil
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DIST = os.path.join(ROOT, 'dist')
+DIST = os.path.join(ROOT, 'dist', 'play')
 
 
 def target_size(path):

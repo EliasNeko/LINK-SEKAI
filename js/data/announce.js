@@ -4,17 +4,16 @@
   'use strict';
 
   LS.ANNOUNCE = {
-    version: 'v2.9.2',
-    codename: '星港启程',
+    version: 'v2.9.3',
+    codename: '星港门户',
     date: '2026.11.10',
     author: '龙潜猫隐',
-    tagline: '从浏览器出发，去往每一块屏幕。',
+    tagline: '先经过星港门户，再启程去往星海。',
     changes: [
-      { title: '看板娘启动图标 · 星冕大头照', text: '为 Java 龙娘重新绘制启动图标：紫晶龙角、银白长发与金色星弧收进一枚深色方印，按二游启动图标的规格处理，脸与瞳光都完整露出。网页、安卓与桌面端共用同一枚图标。' },
-      { title: '官方站点 · 星港门户', text: '新官网把世界、六大职业、系统与档案收进同一页暗金版式，可以直接在网页游玩，也可以下载安卓 APK 与 Windows 安装包；三端账号与存档共用同一套云端。' },
-      { title: '安卓客户端 · 随身星轨', text: '新增 Android 客户端，支持文件上传、返回键回退与断网重连；安装后可直接进入游戏，与网页端实时同步进度。' },
-      { title: 'Windows 客户端 · 桌面星港', text: '新增 Windows 安装包，桌面快捷方式、开始菜单与卸载入口齐全；窗口内直接载入线上游戏，更新无需重装客户端。' },
-      { title: '浏览器安装 · 把游戏留在桌面', text: '补齐 PWA 清单、favicon 与主屏图标：手机浏览器可把游戏添加到主屏，以独立窗口运行，不再显示地址栏。' }
+      { title: '原地址 · 现在是官网', text: '原来的游戏链接不再直接跳进网页游戏，而是先打开官方站点。想开始冒险，点官网上的「进入游戏」即可；旧书签也会稳稳落在星港门户。' },
+      { title: '网页游戏 · 迁至 /play', text: '网页版搬到官网的 /play 入口，账号、存档与好友关系原样保留。三端仍然共用同一套云端，换入口不换档案。' },
+      { title: '三端入口 · 同步更新', text: '官方站点、Android 客户端与 Windows 客户端全部指向新的 /play 入口；更新后照常登录，进度自动接着上一次。' },
+      { title: '登录提示 · 账号不是昵称', text: '登录页补了一行说明：登录账号是注册时填写的英文/数字/下划线账号，不是游戏里的昵称；登录失败时会先提醒核对账号拼写。' }
     ],
     openSource: [
       '《代码 Link-Sekai》由龙潜猫隐独立制作，从今天起完全开源。源代码、剧情、关卡数据与美术资源都会公开，任何人都可以免费游玩、阅读、修改，也可以把它带进课堂、社团，或者某个只想写点东西的深夜。',
@@ -26,7 +25,7 @@
       accountUrl: 'https://github.com/EliasNeko',
       repoUrl: 'https://github.com/EliasNeko/LINK-SEKAI',
       repoName: 'LINK-SEKAI',
-      siteUrl: 'https://link-sekai-official-ot4mp9chy59.qoder.zone',
+      siteUrl: 'https://link-sekai-ot4mp9chy59.qoder.zone',
       intro: [
         '我是龙潜猫隐，GitHub 账号是 EliasNeko。湖南人，软件技术专业 26 级学生，平时主要写 Java、Python、C++、NodeJS 和 Go。',
         '这个账号只用来做个人语言学习与技术练习，不会用于任何商业用途。LINK-SEKAI 的源码、关卡数据、成品美术资源与更新记录都会放在这里，后续版本也会继续在仓库里更新。',

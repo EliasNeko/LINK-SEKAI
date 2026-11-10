@@ -2,9 +2,14 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    if (location.pathname === '/play/') {
+      location.replace('/play/index.html' + location.search + location.hash);
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#07090f" />
-  <meta name="description" content="《代码 Link-Sekai》官方站点——把编译、报错与重构写成一场穿越星海的冒险。六门语言，六条星轨，网页、安卓与 Windows 共用同一套云端存档。" />
+  <meta name="description" content="《代码 Link-Sekai》官方站点——星港门户。把编译、报错与重构写成一场穿越星海的冒险；从官网进入网页游戏，或下载安卓与 Windows 客户端，三端共用同一套云端存档。" />
   <meta name="author" content="龙潜猫隐" />
   <title>代码 Link-Sekai · 官方站点</title>
   <link rel="icon" href="assets/app/favicon.ico" />
@@ -12,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/site.css?v=2.9.2b" />
+  <link rel="stylesheet" href="/css/site.css?v=2.9.3b" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -32,7 +37,7 @@
         <a href="#archive"><i>05</i>视觉档案</a>
       </nav>
       <div class="nav-actions">
-        <a class="nav-play" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener">进入游戏 <span>↗</span></a>
+        <a class="nav-play" href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener">进入游戏 <span>↗</span></a>
         <button class="nav-burger" id="navBurger" aria-label="打开导航" aria-expanded="false"><i></i><i></i></button>
       </div>
     </div>
@@ -63,11 +68,11 @@
           </h1>
           <p class="hero-desc reveal">六门语言，六条星轨。语法是咒文，运行时是战场，<br class="pc-only" />报错是这个世界上唯一诚实的回声。你写的每一行代码，都会留下回响。</p>
           <div class="hero-actions reveal">
-            <a class="btn btn-gold" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener"><span>开始游戏</span><i>→</i></a>
+            <a class="btn btn-gold" href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener"><span>开始游戏</span><i>→</i></a>
             <a class="btn btn-line" href="#download"><span>下载客户端</span><i>↓</i></a>
           </div>
           <ul class="hero-meta reveal">
-            <li><b>v2.9.2</b><span>星港启程</span></li>
+            <li><b>v2.9.3</b><span>星港门户</span></li>
             <li><b>06</b><span>语言星轨</span></li>
             <li><b>CLOUD</b><span>三端同档</span></li>
             <li><b>FREE</b><span>开源项目</span></li>
@@ -92,13 +97,13 @@
     <!-- TICKER -->
     <div class="ticker" aria-hidden="true">
       <div class="ticker-track">
-        <span>V2.9.2 星港启程 · 看板娘启动图标上线</span><i>◆</i>
-        <span>官方站点 · 网页 / 安卓 / Windows 三端同档</span><i>◆</i>
-        <span>浏览器可添加到主屏 · 独立窗口运行</span><i>◆</i>
+        <span>V2.9.3 星港门户 · 官网入驻原地址</span><i>◆</i>
+        <span>网页游戏迁至 /play · 三端入口同步</span><i>◆</i>
+        <span>登录账号不是游戏昵称 · 请核对拼写</span><i>◆</i>
         <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
-        <span>V2.9.2 星港启程 · 看板娘启动图标上线</span><i>◆</i>
-        <span>官方站点 · 网页 / 安卓 / Windows 三端同档</span><i>◆</i>
-        <span>浏览器可添加到主屏 · 独立窗口运行</span><i>◆</i>
+        <span>V2.9.3 星港门户 · 官网入驻原地址</span><i>◆</i>
+        <span>网页游戏迁至 /play · 三端入口同步</span><i>◆</i>
+        <span>登录账号不是游戏昵称 · 请核对拼写</span><i>◆</i>
         <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
       </div>
     </div>
@@ -289,16 +294,16 @@
           <article class="dl-card reveal">
             <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 4 5.6 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.6-4-9s1.4-6.5 4-9z"/></svg></span><em>WEB</em></div>
             <h3>网页版</h3>
-            <p class="dl-desc">无需安装，浏览器直接进入。适合电脑与手机随时开一局。</p>
+            <p class="dl-desc">无需安装，从官网直接进入 /play。适合电脑与手机随时开一局。</p>
             <dl class="dl-meta"><div><dt>平台</dt><dd>任意现代浏览器</dd></div><div><dt>大小</dt><dd>无需下载</dd></div><div><dt>存档</dt><dd>云端同步</dd></div></dl>
-            <a class="btn btn-gold dl-btn" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener"><span>立即游玩</span><i>→</i></a>
+            <a class="btn btn-gold dl-btn" href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener"><span>立即游玩</span><i>→</i></a>
           </article>
 
           <article class="dl-card reveal">
             <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 9h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 9 6 6M17 9l1-3M9 13v2M15 13v2M9.5 17.5h5"/><circle cx="9" cy="7" r=".6" fill="currentColor"/><circle cx="15" cy="7" r=".6" fill="currentColor"/></svg></span><em>ANDROID</em></div>
             <h3>安卓客户端</h3>
             <p class="dl-desc">APK 直接安装，指向同一套云端。适合在手机上刷题与打关卡。</p>
-            <dl class="dl-meta"><div><dt>版本</dt><dd id="apkVer">v2.9.2</dd></div><div><dt>大小</dt><dd id="apkSize">约 1 MB</dd></div><div><dt>要求</dt><dd>Android 8.0+</dd></div></dl>
+            <dl class="dl-meta"><div><dt>版本</dt><dd id="apkVer">v2.9.3</dd></div><div><dt>大小</dt><dd id="apkSize">约 1 MB</dd></div><div><dt>要求</dt><dd>Android 8.0+</dd></div></dl>
             <a class="btn btn-line dl-btn" id="apkBtn" href="#download" data-dl="apk"><span>下载 APK</span><i>↓</i></a>
           </article>
 
@@ -306,12 +311,12 @@
             <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span><em>WINDOWS</em></div>
             <h3>桌面客户端</h3>
             <p class="dl-desc">EXE 安装包，本地启动，窗口化运行。数据仍保存在云端。</p>
-            <dl class="dl-meta"><div><dt>版本</dt><dd id="exeVer">v2.9.2</dd></div><div><dt>大小</dt><dd id="exeSize">约 79 MB</dd></div><div><dt>要求</dt><dd>Windows 10/11</dd></div></dl>
+            <dl class="dl-meta"><div><dt>版本</dt><dd id="exeVer">v2.9.3</dd></div><div><dt>大小</dt><dd id="exeSize">约 79 MB</dd></div><div><dt>要求</dt><dd>Windows 10/11</dd></div></dl>
             <a class="btn btn-line dl-btn" id="exeBtn" href="#download" data-dl="exe"><span>下载 EXE</span><i>↓</i></a>
           </article>
         </div>
 
-        <p class="dl-note reveal">客户端内嵌线上版本，更新后无需重新下载安装包；账号与网页版互通。遇到问题可在 GitHub 提交 Issue。</p>
+        <p class="dl-note reveal">网页版统一从官网进入 /play；客户端内嵌同一入口，更新后无需重新下载安装包。三端账号与云存档互通，遇到问题可在 GitHub 提交 Issue。</p>
       </div>
     </section>
 
@@ -351,7 +356,7 @@
         </div>
         <nav class="foot-links" aria-label="页脚导航">
           <a href="https://github.com/EliasNeko/LINK-SEKAI" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
-          <a href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener">进入游戏 ↗</a>
+          <a href="https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html" target="_blank" rel="noopener">进入游戏 ↗</a>
           <a href="#top">回到顶部 ↑</a>
         </nav>
       </div>
@@ -360,6 +365,6 @@
     </div>
   </footer>
 
-  <script src="js/site.js?v=2.9.2b"></script>
+  <script src="/js/site.js?v=2.9.3b"></script>
 </body>
 </html>

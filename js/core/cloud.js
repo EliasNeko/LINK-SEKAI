@@ -86,7 +86,7 @@
   function messageFor(err) {
     const code = (err && err.code) || '';
     if (code === 'network_error') return '云端暂时连不上。本机进度已保留，网络恢复后会自动同步。';
-    if (code === 'invalid_credentials') return '账号或通行咒文不正确。';
+    if (code === 'invalid_credentials') return '账号或通行咒文不正确。登录账号是注册时填写的英文/数字/下划线账号，不是游戏昵称，请先核对拼写。';
     if (code === 'username_taken') return '这个登录账号已经被注册了。';
     if (code === 'rate_limited') return '尝试次数有点多，请稍后再试。';
     if (code === 'payload_too_large') return '存档体积超出云端上限，请清理过大的头像后再试。';

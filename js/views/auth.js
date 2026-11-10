@@ -46,7 +46,7 @@
               <input class="input" type="password" name="password" maxlength="64" placeholder="至少 6 位" required>
             </div>
             <button class="btn btn-lg btn-block" type="submit">推开星门 ${LS.icon('arrow', 15)}</button>
-            <div class="auth-note"><span class="dot"></span><span>每位旅人只能登录自己的账号。还没有账号？先新建一枚星印。</span></div>
+            <div class="auth-note"><span class="dot"></span><span>登录账号是注册时填写的英文 / 数字 / 下划线账号，不是游戏昵称。每位旅人只能登录自己的账号；还没有账号？先新建一枚星印。</span></div>
           </form>
           <form class="auth-form hidden" id="register-form" autocomplete="off">
             <div class="field-row">

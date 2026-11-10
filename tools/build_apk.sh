@@ -9,8 +9,8 @@ PLATFORM="$SDK/platforms/android-34/android.jar"
 OUT="$ROOT/official/downloads"
 BUILD="$ROOT/android/build"
 
-VERSION_NAME="2.9.2"
-VERSION_CODE="292"
+VERSION_NAME="2.9.3"
+VERSION_CODE="293"
 PKG="com.eliasneko.linksekai"
 
 if [ ! -f "$BT/aapt2.exe" ] && [ ! -f "$BT/aapt2" ]; then

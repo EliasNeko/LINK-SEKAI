@@ -21,11 +21,12 @@
 
 ## 在线游玩
 
-- 网页版（即开即玩）：[link-sekai-ot4mp9chy59.qoder.zone](https://link-sekai-ot4mp9chy59.qoder.zone)
-- 官方站点（世界观、六大职业与三端下载）：[link-sekai-official-ot4mp9chy59.qoder.zone](https://link-sekai-official-ot4mp9chy59.qoder.zone)
+- 星港门户（官方站点，进入游戏请从这里走）：[link-sekai-ot4mp9chy59.qoder.zone](https://link-sekai-ot4mp9chy59.qoder.zone)
+- 网页版直达：[link-sekai-ot4mp9chy59.qoder.zone/play/index.html](https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html)
+- 官网镜像（同一份内容）：[link-sekai-official-ot4mp9chy59.qoder.zone](https://link-sekai-official-ot4mp9chy59.qoder.zone)
 - 安卓 APK 与 Windows 安装包：[GitHub Releases](https://github.com/EliasNeko/LINK-SEKAI/releases/latest)
 
-三端共用同一套云端账号与存档，客户端内嵌线上版本，内容更新无需重新安装。
+原地址现在先打开官方站点，网页游戏统一在 `/play/` 入口（直达 `/play/index.html`）。三端共用同一套云端账号与存档，客户端内嵌同一入口，内容更新无需重新安装。
 
 ---
 
@@ -53,9 +54,10 @@
 
 ## 在线游玩
 
-> 线上地址：<https://link-sekai-ot4mp9chy59.qoder.zone>
+> 星港门户：<https://link-sekai-ot4mp9chy59.qoder.zone>  
+> 网页游戏：<https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html>
 
-线上版本使用独立账号系统：每个玩家有自己的登录账号、旅人编号（UID）和一份互不覆盖的存档。账号名与 UID 都由服务端判重，并发注册也不会产生重复账号。
+线上版本使用独立账号系统：每个玩家有自己的登录账号、旅人编号（UID）和一份互不覆盖的存档。账号名与 UID 都由服务端判重，并发注册也不会产生重复账号。登录账号是注册时填写的英文 / 数字 / 下划线账号，不是游戏昵称。
 
 ## 本地运行
 
@@ -67,7 +69,7 @@
 python -m http.server 8123
 ```
 
-然后打开 <http://localhost:8123>。
+然后打开 <http://localhost:8123> 玩源码版网页游戏。想预览线上结构（官网在根、游戏在 `/play/index.html`），先运行 `python tools/build-portal.py`，再在 `dist` 目录起静态服务器。
 
 本地模式（包括直接打开 `file://`）会把账号与进度保存在浏览器的 `localStorage` 里，不联网也能玩。线上版本才会启用云端账号与同步。
 

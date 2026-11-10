@@ -21,7 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
-    private static final String GAME_URL = "https://link-sekai-ot4mp9chy59.qoder.zone";
+    private static final String GAME_URL = "https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html";
     private static final int FILE_CHOOSER_CODE = 4301;
 
     private WebView web;
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         s.setBuiltInZoomControls(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
-        s.setUserAgentString(s.getUserAgentString() + " LinkSekaiApp/2.9.2");
+        s.setUserAgentString(s.getUserAgentString() + " LinkSekaiApp/2.9.3");
         if (android.os.Build.VERSION.SDK_INT >= 33) {
             s.setAlgorithmicDarkeningAllowed(false);
         }
