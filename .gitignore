@@ -13,8 +13,9 @@ android/build/
 android/keystore/
 desktop/build/
 desktop/release/
-official/downloads/*.apk
-official/downloads/*.exe
+desktop/release-new/
+desktop/release-trim/
+official/downloads/
 
 # 依赖与缓存
 node_modules/

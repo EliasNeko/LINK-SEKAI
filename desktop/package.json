@@ -49,6 +49,11 @@
       "shortcutName": "LINK-SEKAI",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico"
-    }
+    },
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "compression": "maximum"
   }
 }

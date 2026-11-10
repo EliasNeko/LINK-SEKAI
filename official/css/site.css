@@ -389,6 +389,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .dl-meta dd { margin: 0; font-family: var(--mono); font-size: 10px; color: var(--ink); letter-spacing: .04em; }
 .dl-btn { margin-top: auto; width: 100%; }
 .dl-btn.is-pending { opacity: .55; pointer-events: auto; }
+.dl-alt { margin: 12px 0 0; text-align: center; font-size: 10px; line-height: 1.9; letter-spacing: .06em; color: var(--ink-3); }
+.dl-alt a { color: var(--ink-2); border-bottom: 1px solid var(--line); transition: color .2s, border-color .2s; }
+.dl-alt a:hover, .dl-alt a:focus-visible { color: var(--gold); border-color: var(--gold); }
+.dl-alt a.is-on { color: var(--gold); border-color: var(--gold); }
 .dl-note { margin: 26px 0 0; text-align: center; font-size: 10.5px; letter-spacing: .06em; color: var(--ink-3); }
 
 /* ---------- archive ---------- */

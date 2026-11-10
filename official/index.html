@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/site.css?v=2.9.3b" />
+  <link rel="stylesheet" href="/css/site.css?v=2.9.3d" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -311,12 +311,14 @@
             <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span><em>WINDOWS</em></div>
             <h3>桌面客户端</h3>
             <p class="dl-desc">EXE 安装包，本地启动，窗口化运行。数据仍保存在云端。</p>
-            <dl class="dl-meta"><div><dt>版本</dt><dd id="exeVer">v2.9.3</dd></div><div><dt>大小</dt><dd id="exeSize">约 79 MB</dd></div><div><dt>要求</dt><dd>Windows 10/11</dd></div></dl>
+            <dl class="dl-meta"><div><dt>版本</dt><dd id="exeVer">v2.9.3</dd></div><div><dt>大小</dt><dd id="exeSize">约 72 MB</dd></div><div><dt>要求</dt><dd>Windows 10/11</dd></div></dl>
             <a class="btn btn-line dl-btn" id="exeBtn" href="#download" data-dl="exe"><span>下载 EXE</span><i>↓</i></a>
+            <p class="dl-alt">下载线路：<a data-line="hk" href="#download">香港节点</a> · <a data-line="cn" href="#download">国内节点</a> · <a data-line="bak" href="#download">备用节点</a> · <a data-line="gh" href="#download">GitHub</a></p>
+            <p class="dl-alt">也可以免安装：用 Edge 打开网页版，在菜单里选择「应用 → 将此站点安装为应用」。</p>
           </article>
         </div>
 
-        <p class="dl-note reveal">网页版统一从官网进入 /play；客户端内嵌同一入口，更新后无需重新下载安装包。三端账号与云存档互通，遇到问题可在 GitHub 提交 Issue。</p>
+        <p class="dl-note reveal">网页版统一从官网进入 /play；客户端内嵌同一入口，更新后无需重新下载安装包。Windows 安装包托管在 GitHub 与开源加速节点，官网提供多条线路，速度随地区而异。三端账号与云存档互通，遇到问题可在 GitHub 提交 Issue。</p>
       </div>
     </section>
 
@@ -365,6 +367,24 @@
     </div>
   </footer>
 
-  <script src="/js/site.js?v=2.9.3b"></script>
+  <script src="/js/site.js?v=2.9.3d"></script>
+  <script>
+  /* 托管平台会向页面注入右下角“Made with Qoder”悬浮角标（其自带「隐藏水印」按钮）。
+     手机端它正好压住底部导航，这里主动收起，并继续拦截后续重复注入。 */
+  (function () {
+    var drop = function (node) {
+      if (node && node.nodeType === 1 && (node.id === 'qoder-sites-watermark' || node.tagName === 'QODER-SITES-BADGE')) node.remove();
+    };
+    var sweep = function () {
+      var list = document.querySelectorAll('#qoder-sites-watermark, qoder-sites-badge');
+      for (var i = 0; i < list.length; i += 1) list[i].remove();
+    };
+    sweep();
+    document.addEventListener('DOMContentLoaded', sweep);
+    new MutationObserver(function (records) {
+      records.forEach(function (r) { r.addedNodes.forEach(drop); });
+    }).observe(document.documentElement, { childList: true });
+  })();
+  </script>
 </body>
 </html>

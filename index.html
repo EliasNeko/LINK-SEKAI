@@ -75,5 +75,23 @@
   <script src="js/views/friends.js?v=20261110V42"></script>
   <script src="js/views/exams.js?v=20261110V42"></script>
   <script src="js/app.js?v=20261110V42"></script>
+  <script>
+  /* 托管平台会向页面注入右下角“Made with Qoder”悬浮角标（其自带「隐藏水印」按钮）。
+     手机端它正好压住底部导航，这里主动收起，并继续拦截后续重复注入。 */
+  (function () {
+    var drop = function (node) {
+      if (node && node.nodeType === 1 && (node.id === 'qoder-sites-watermark' || node.tagName === 'QODER-SITES-BADGE')) node.remove();
+    };
+    var sweep = function () {
+      var list = document.querySelectorAll('#qoder-sites-watermark, qoder-sites-badge');
+      for (var i = 0; i < list.length; i += 1) list[i].remove();
+    };
+    sweep();
+    document.addEventListener('DOMContentLoaded', sweep);
+    new MutationObserver(function (records) {
+      records.forEach(function (r) { r.addedNodes.forEach(drop); });
+    }).observe(document.documentElement, { childList: true });
+  })();
+  </script>
 </body>
 </html>

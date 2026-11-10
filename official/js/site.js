@@ -73,22 +73,53 @@
     }
   }
 
-  /* 下载入口：APK 优先站点内托管，EXE 走 Release 附件（安装包体积超过站点单文件上限） */
+  /* 下载入口
+     - APK：站点内托管，取不到时退回 Release
+     - EXE：体积超过站点单文件上限，放在 GitHub Release；国内直连 GitHub
+       经常超时，因此提供几条开源加速线路，点线路即开始下载并记为主按钮 */
   var RELEASE_BASE = 'https://github.com/EliasNeko/LINK-SEKAI/releases/download/v2.9.3/';
-  var files = {
-    apk: { local: 'downloads/link-sekai-v2.9.3.apk', remote: RELEASE_BASE + 'link-sekai-v2.9.3.apk' },
-    exe: { remote: RELEASE_BASE + 'LINK-SEKAI-Setup-2.9.3.exe' }
+  var RELEASE_APK = RELEASE_BASE + 'link-sekai-v2.9.3.apk';
+  var EXE_FILE = RELEASE_BASE + 'LINK-SEKAI-Setup-2.9.3.exe';
+  var LOCAL_APK = 'downloads/link-sekai-v2.9.3.apk';
+  var LINES = {
+    hk: 'https://hk.gh-proxy.com/',
+    cn: 'https://ghproxy.net/',
+    bak: 'https://gh-proxy.com/',
+    gh: ''
   };
-  document.querySelectorAll('[data-dl]').forEach(function (btn) {
-    var kind = btn.getAttribute('data-dl');
-    var f = files[kind];
-    if (!f) return;
-    btn.href = f.remote;
-    if (!f.local) return;
-    fetch(f.local, { method: 'HEAD' }).then(function (r) {
-      if (r.ok) btn.href = f.local;
+  var DEFAULT_LINE = 'hk';
+
+  var apkBtn = document.querySelector('[data-dl="apk"]');
+  if (apkBtn) {
+    apkBtn.href = RELEASE_APK;
+    fetch(LOCAL_APK, { method: 'HEAD' }).then(function (r) {
+      if (r.ok) apkBtn.href = LOCAL_APK;
     }).catch(function () {});
+  }
+
+  var exeBtn = document.querySelector('[data-dl="exe"]');
+  var lineLinks = Array.prototype.slice.call(document.querySelectorAll('[data-line]'));
+
+  function lineUrl(id) {
+    return LINES[id] ? LINES[id] + EXE_FILE : EXE_FILE;
+  }
+  function selectLine(id) {
+    if (!(id in LINES)) return;
+    if (exeBtn) exeBtn.href = lineUrl(id);
+    lineLinks.forEach(function (a) {
+      var on = a.getAttribute('data-line') === id;
+      a.classList.toggle('is-on', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+
+  lineLinks.forEach(function (a) {
+    var id = a.getAttribute('data-line');
+    a.href = lineUrl(id);
+    a.addEventListener('click', function () { selectLine(id); });
   });
+  selectLine(DEFAULT_LINE);
 
   /* 年份 */
   var y = document.querySelector('[data-year]');

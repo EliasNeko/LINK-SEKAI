@@ -24,9 +24,12 @@
 - 星港门户（官方站点，进入游戏请从这里走）：[link-sekai-ot4mp9chy59.qoder.zone](https://link-sekai-ot4mp9chy59.qoder.zone)
 - 网页版直达：[link-sekai-ot4mp9chy59.qoder.zone/play/index.html](https://link-sekai-ot4mp9chy59.qoder.zone/play/index.html)
 - 官网镜像（同一份内容）：[link-sekai-official-ot4mp9chy59.qoder.zone](https://link-sekai-official-ot4mp9chy59.qoder.zone)
-- 安卓 APK 与 Windows 安装包：[GitHub Releases](https://github.com/EliasNeko/LINK-SEKAI/releases/latest)
+- 安卓 APK 与 Windows 安装包：官网下载区（APK 站内托管；Windows 安装包托管在 GitHub Release，下载卡提供香港、国内、备用三条加速线路）
+- 备用整包：[GitHub Releases](https://github.com/EliasNeko/LINK-SEKAI/releases/latest)
 
 原地址现在先打开官方站点，网页游戏统一在 `/play/` 入口（直达 `/play/index.html`）。三端共用同一套云端账号与存档，客户端内嵌同一入口，内容更新无需重新安装。
+
+Windows 安装包约 72 MB，超过站点单文件上限，所以站点只托管 APK，EXE 放在 GitHub Release；官网下载卡另外给出几条开源加速节点（`hk.gh-proxy.com`、`ghproxy.net`、`gh-proxy.com`），国内直连 GitHub 超时时可以换线下载。改版安装包时更新 `official/js/site.js` 里的 `RELEASE_BASE` 与三个文件名，并把新附件传到对应的 Release。
 
 ---
 

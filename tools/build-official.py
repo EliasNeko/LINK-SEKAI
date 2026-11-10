@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """打包官方站点到 official/dist（站点托管用）。
 
-Windows 安装包约 79 MB，超过 Qoder Sites 单文件 50 MiB 上限，
-因此只放入 APK，EXE 由 GitHub Release 附件提供。
+Windows 安装包约 72 MB，超过 Qoder Sites 单文件 50 MiB 上限，
+因此只放 APK；EXE 托管在 GitHub Release，官网提供多条加速线路。
 """
 import re
 import shutil
