@@ -112,14 +112,73 @@
   }
 
   /* ---------------- dialogue stage ---------------- */
+  /* 对话舞台按“实际出场者”组建立绘阵列：谁说话谁就上前、点亮、放大，
+     其余角色退后压暗。玩家 / 界灵 / 同席 / 怪物 / 剧情 NPC 各有对应立绘，
+     不再固定成左右两个格子。 */
+  const ENEMY_KINDS = ['slime', 'wolf', 'wraith', 'dragon', 'golem', 'construct', 'drone', 'glitch'];
+  const ENEMY_BY_NAME = [
+    [/狼/, 'wolf'],
+    [/龙/, 'dragon'],
+    [/巨像|源核|熔渣|核心|石块|铁|齿轮/, 'golem'],
+    [/傀儡|人偶|石像|守卫|构造|侍从|盔甲|机偶/, 'construct'],
+    [/蜂|虫|群|涡|脉冲|浮游|无人机/, 'drone'],
+    [/字灵|乱码|回声|信号|异常|残响|泛化|叠写|日志|断点|空指针|断链|未定义|空键|污染|溢流|漏|织|噪|符|代码|编译|索引|字符|灾|错/, 'glitch'],
+    [/影|魇|魅|幽灵|魂|雾|幻|无人|空壳|悬空|失忆|失焦|缄默|名录|噬名|吞码/, 'wraith']
+  ];
+  function enemyKindFor(name) {
+    const n = String(name || '');
+    for (let i = 0; i < ENEMY_BY_NAME.length; i++) {
+      if (ENEMY_BY_NAME[i][0].test(n)) return ENEMY_BY_NAME[i][1];
+    }
+    let h = 0;
+    for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) | 0;
+    return ENEMY_KINDS[Math.abs(h) % ENEMY_KINDS.length];
+  }
+  function guideArt(who, langId) {
+    const n = String(who || '');
+    if (/零/.test(n)) return LS.allyImg(240, 'dlg-actor-img', '界灵·零');
+    if (/蒂娅|緹亚/.test(n)) {
+      return `<img class="pixel-img dlg-actor-img" src="assets/guide/guide_tia.webp?v=20261110V35" alt="${LS.esc(n)}" onerror="this.onerror=null;this.remove()">`;
+    }
+    /* 尚未绘制立绘的剧情 NPC：用带名字缩写的徽记登场，避免拿别人的脸充数。 */
+    return `<div class="dlg-sigil dlg-actor-sigil" aria-hidden="true">${LS.esc(n.slice(-1) || '零')}</div>`;
+  }
+  function speakerArt(tone, who, opts, user, langId) {
+    if (tone === 'player') {
+      /* 当前篇章的守护者形象就是旅人在这一界的立绘；阶段越高立绘越进阶。 */
+      const stage = LS.stageOf ? LS.stageOf(user, langId) : 0;
+      return LS.charImg(Object.assign({ langId }, user.char || {}, { stage }), 250, 'dlg-actor-img', who);
+    }
+    if (tone === 'ally') return LS.npcImg(langId, 240, 'dlg-actor-img', who);
+    if (tone === 'enemy') {
+      const kind = (opts.enemy && opts.enemy.kind) || enemyKindFor(who);
+      const boss = !!(opts.enemy && opts.enemy.boss);
+      return LS.enemyImg(kind, { boss }, 230, 'dlg-actor-img dlg-enemy-img', who);
+    }
+    return guideArt(who, langId);
+  }
+
   LS.dialogue = function (opts) {
     opts = opts || {};
     const lines = opts.lines || [];
     const user = LS.store.current() || {};
-    const playerImg = LS.charImg(Object.assign({ langId: user.primaryLang || 'python' }, user.char || {}), 190, 'dlg-char');
-    const enemy = opts.enemy;
-    const enemyImg = enemy ? LS.enemyImg(enemy.kind || 'slime', { boss: !!enemy.boss }, 220, 'dlg-char dlg-enemy-img') : '';
-    const ally = LS.ALLY[opts.langId] || { name: '界灵·零', sigil: '零' };
+    const langId = opts.langId || user.primaryLang || 'python';
+    const toneRank = { player: 0, guide: 1, ally: 2, enemy: 3 };
+    const jpOf = t => t === 'enemy' ? 'ENEMY' : t === 'ally' ? 'ALLY' : t === 'player' ? 'YOU' : 'GUIDE';
+
+    /* 收集全部出场者，保持首次出场顺序；同名的同一角色只占一个位置。 */
+    const cast = [];
+    const byKey = {};
+    lines.forEach(l => {
+      const tone = l.tone || 'guide';
+      const who = l.who || '？？？';
+      const key = tone + '::' + who;
+      if (byKey[key]) return;
+      const actor = { key, tone, who, art: l.art || '' , rank: toneRank[tone] == null ? 1 : toneRank[tone] };
+      byKey[key] = actor;
+      cast.push(actor);
+    });
+    cast.sort((a, b) => a.rank - b.rank);
 
     return new Promise(resolve => {
       const overlay = document.createElement('div');
@@ -128,8 +187,12 @@
         <div class="dlg-vignette"></div>
         <div class="dlg-stage">
           <div class="dlg-scene-label"><span class="jp">${LS.esc(opts.jp || '対話')}</span><b>${LS.esc(opts.title || '遭遇')}</b></div>
-          <div class="dlg-cast dlg-left">${playerImg}<span class="dlg-cast-name">${LS.esc(user.gameName || '旅人')}</span></div>
-          ${enemyImg ? `<div class="dlg-cast dlg-right">${enemyImg}<span class="dlg-cast-name">${LS.esc(enemy.name || '影兽')}</span></div>` : `<div class="dlg-cast dlg-right dlg-ally-cast">${LS.npcImg(opts.langId || (user.primaryLang || 'python'), 210)}<span class="dlg-cast-name">${LS.esc(ally.name)}</span></div>`}
+          <div class="dlg-cast" id="dlg-cast">
+            ${cast.map(a => `<div class="dlg-actor" data-actor="${LS.esc(a.key)}" data-tone="${a.tone}">
+              <div class="dlg-actor-art">${a.art || speakerArt(a.tone, a.who, opts, user, langId)}</div>
+              <span class="dlg-actor-label">${LS.esc(a.who)}</span>
+            </div>`).join('')}
+          </div>
           <div class="dlg-box">
             <div class="dlg-nameplate"><span class="jp" id="dlg-jp"></span><b id="dlg-name"></b></div>
             <p class="dlg-text" id="dlg-text"></p>
@@ -147,8 +210,7 @@
       const jpEl = overlay.querySelector('#dlg-jp');
       const textEl = overlay.querySelector('#dlg-text');
       const dotsEl = overlay.querySelector('#dlg-dots');
-      const left = overlay.querySelector('.dlg-left');
-      const right = overlay.querySelector('.dlg-right');
+      const actorsEls = Array.from(overlay.querySelectorAll('.dlg-actor'));
 
       function finish() {
         if (done) return;
@@ -163,16 +225,24 @@
         dotsEl.innerHTML = lines.map((_, n) => `<i class="${n <= i ? 'on' : ''}"></i>`).join('');
       }
 
+      function spotlight(key) {
+        actorsEls.forEach(el => {
+          const on = el.dataset.actor === key;
+          el.classList.toggle('is-speaking', on);
+          el.setAttribute('aria-current', on ? 'true' : 'false');
+        });
+      }
+
       function show(n) {
         i = n;
         if (i >= lines.length) { finish(); return; }
         const line = lines[i];
         const tone = line.tone || 'guide';
-        nameEl.textContent = line.who || '？？？';
-        jpEl.textContent = tone === 'enemy' ? 'ENEMY' : tone === 'ally' ? 'ALLY' : tone === 'player' ? 'YOU' : 'GUIDE';
+        const who = line.who || '？？？';
+        nameEl.textContent = who;
+        jpEl.textContent = jpOf(tone);
         overlay.dataset.tone = tone;
-        left.classList.toggle('speaking', tone === 'player' || tone === 'ally');
-        right.classList.toggle('speaking', tone === 'enemy');
+        spotlight(tone + '::' + who);
         renderDots();
         textEl.textContent = '';
         typing = true;
@@ -222,9 +292,25 @@
     { href: '#/friends', label: '星网好友', jp: 'FRIENDS', icon: 'users', key: 'friends' },
     { href: '#/profile', label: '旅人档案', jp: 'PROFILE', icon: 'user', key: 'profile' }
   ];
+  const NAV_GROUPS = [
+    { label: '探索 · EXPLORE', keys: ['hub', 'world', 'codex', 'training', 'daily'] },
+    { label: '养成 · GROWTH', keys: ['shop', 'forge', 'levels', 'proficiency', 'exams'] },
+    { label: '星网 · SOCIAL', keys: ['friends', 'profile'] }
+  ];
+  const NAV_COLLAPSE_KEY = 'ls.nav.collapsed';
+  function navCollapsed() {
+    try { return localStorage.getItem(NAV_COLLAPSE_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setNavCollapsed(v) {
+    try { v ? localStorage.setItem(NAV_COLLAPSE_KEY, '1') : localStorage.removeItem(NAV_COLLAPSE_KEY); } catch (e) { }
+  }
+  /* 侧栏抽屉：移动端打开时锁住背景滚动，关闭后恢复。 */
+  function lockPageScroll(on) {
+    document.body.classList.toggle('nav-open-lock', !!on);
+  }
 
   function brand() {
-    return '<div class="brand"><div class="brand-mark">L</div><div class="brand-text"><b>LINK-SEKAI</b><span>コード異世界</span></div></div>';
+    return '<a class="brand" href="#/" aria-label="返回星海大厅"><div class="brand-mark">L</div><div class="brand-text"><b>LINK-SEKAI</b><span>コード異世界</span></div></a>';
   }
 
   /* 头像悬浮卡：鼠标停在头像上可以直接进入旅人档案。移动端点击头像同样跳转。 */
@@ -255,30 +341,40 @@
     const u = LS.store.current();
     const lv = LS.levelFromXp(u.xp || 0);
     const titleDef = LS.titleById(u.titleEquipped);
-    return `<div class="shell">
-      <aside class="sidebar">
-        ${brand()}
-        <div>
-          <div class="nav-label">导航 · NAVIGATION</div>
-          <nav class="nav">${NAV.map(n => `<a href="${n.href}" class="${active === n.key ? 'active' : ''}">${LS.icon(n.icon)}<span>${n.label}</span>${n.key === 'friends' ? `<i class="nav-badge social" data-social-badge hidden title="待处理的好友申请">0</i>` : ''}</a>`).join('')}</nav>
+    const collapsed = navCollapsed();
+    const navItem = (n) => `<a href="${n.href}" class="${active === n.key ? 'active' : ''}" title="${LS.esc(n.label)}">${LS.icon(n.icon)}<span class="nav-txt">${n.label}</span><em class="nav-jp">${n.jp}</em>${n.key === 'friends' ? `<i class="nav-badge social" data-social-badge hidden title="待处理的好友申请">0</i>` : ''}</a>`;
+    const groups = NAV_GROUPS.map(g => `<div class="sb-group">
+        <div class="nav-label">${g.label}</div>
+        <nav class="nav">${g.keys.map(k => navItem(NAV.find(n => n.key === k))).join('')}</nav>
+      </div>`).join('');
+    return `<div class="shell${collapsed ? ' nav-collapsed' : ''}" id="shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="sb-head">
+          ${brand()}
+          <button class="sb-toggle" data-nav-toggle aria-label="${collapsed ? '展开侧边栏' : '收起侧边栏'}" title="${collapsed ? '展开侧边栏' : '收起侧边栏'}">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>
+          </button>
         </div>
-        <div class="sidebar-spacer"></div>
-        <div class="side-card">
-          <div class="lvl">${lv.level}<small>LEVEL</small></div>
-          <div class="side-title">${LS.esc(titleDef ? titleDef.name : '初入星海')}</div>
-          <div class="progress"><i style="width:${lv.pct}%"></i></div>
-          <div class="side-xp"><span>经验 ${LS.formatNum(u.xp || 0)} / ${LS.formatNum(lv.next)}</span><span>${lv.pct}%</span></div>
-        </div>
-        <div class="side-user">
-          ${profilePop(u, 38, 'side-av')}
-          <div style="min-width:0"><div class="su-name">${LS.esc(u.gameName)}</div><div class="su-uid">${LS.esc(u.uid)}</div></div>
-          <button class="logout-btn" data-logout title="退出登录">${LS.icon('logout', 15)}</button>
+        <div class="sb-scroll">${groups}</div>
+        <div class="sb-foot">
+          <div class="side-card">
+            <div class="lvl">${lv.level}<small>LEVEL</small></div>
+            <div class="side-title">${LS.esc(titleDef ? titleDef.name : '初入星海')}</div>
+            <div class="progress"><i style="width:${lv.pct}%"></i></div>
+            <div class="side-xp"><span>经验 ${LS.formatNum(u.xp || 0)} / ${LS.formatNum(lv.next)}</span><span>${lv.pct}%</span></div>
+          </div>
+          <div class="side-user">
+            ${profilePop(u, 38, 'side-av')}
+            <div style="min-width:0"><div class="su-name">${LS.esc(u.gameName)}</div><div class="su-uid">${LS.esc(u.uid)}</div></div>
+            <button class="logout-btn" data-logout title="退出登录">${LS.icon('logout', 15)}</button>
+          </div>
         </div>
       </aside>
+      <div class="sb-scrim" data-nav-close aria-hidden="true"></div>
       <main class="main">
         <div class="topbar">
           <div class="topbar-left">
-            <button class="mobile-menu" data-menu>${LS.icon('map', 18)}</button>
+            <button class="mobile-menu" data-menu aria-label="打开导航">${LS.icon('map', 18)}</button>
             <div class="topbar-title">${LS.esc(title || '星海大厅')}<span>${LS.esc(sub || 'LINK-SEKAI')}</span></div>
           </div>
           <div class="topbar-right">
@@ -407,10 +503,39 @@
       location.hash = '#/auth';
       render();
     }));
+    const shellEl = app.querySelector('#shell');
+    const isDrawer = () => window.matchMedia('(max-width: 1020px)').matches;
+    const closeDrawer = () => {
+      if (!shellEl) return;
+      shellEl.classList.remove('nav-open');
+      lockPageScroll(false);
+    };
+    const toggle = app.querySelector('[data-nav-toggle]');
+    if (toggle) toggle.addEventListener('click', () => {
+      if (!shellEl) return;
+      /* 移动端这个按钮等同于关闭抽屉；桌面端切换收起/展开。 */
+      if (isDrawer()) { closeDrawer(); return; }
+      const next = !shellEl.classList.contains('nav-collapsed');
+      shellEl.classList.toggle('nav-collapsed', next);
+      setNavCollapsed(next);
+      const label = next ? '展开侧边栏' : '收起侧边栏';
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
+    });
     const menu = app.querySelector('[data-menu]');
     if (menu) menu.addEventListener('click', () => {
-      LS.openModal(LS.modalHead('NAVIGATION', '星轨导航', '选择一个要前往的界面。') + `<div class="mobile-nav-list">${NAV.map(n => `<a href="${n.href}" data-close>${LS.icon(n.icon)}<span>${n.label}</span><em>${n.jp}</em></a>`).join('')}</div>`, { wide: false });
+      if (!shellEl) return;
+      shellEl.classList.add('nav-open');
+      lockPageScroll(true);
     });
+    const scrim = app.querySelector('[data-nav-close]');
+    if (scrim) scrim.addEventListener('click', closeDrawer);
+    app.querySelectorAll('.sidebar .nav a').forEach(a => a.addEventListener('click', closeDrawer));
+    if (!bindShell._bound) {
+      bindShell._bound = true;
+      addEventListener('resize', () => { if (!isDrawer()) closeDrawer(); });
+      addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+    }
   }
 
   LS.app = {

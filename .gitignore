@@ -2,9 +2,19 @@
 art-source/
 vibe_images/
 dist/
+official/dist/
 .tmp-webp/
 .tmp-*
 _tmp_*
+
+# 客户端构建与签名（不入库）
+.tools/
+android/build/
+android/keystore/
+desktop/build/
+desktop/release/
+official/downloads/*.apk
+official/downloads/*.exe
 
 # 依赖与缓存
 node_modules/

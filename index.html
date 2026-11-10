@@ -7,18 +7,21 @@
   <meta name="description" content="代码 Link-Sekai（リンクせかい）—— 一款把编程学习变成异世界冒险的网页游戏。以终端为法杖，以逻辑为咒文。" />
   <meta name="author" content="龙潜猫隐" />
   <title>代码 Link-Sekai · 编程异世界</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0910'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='%23c9a45c' stroke-opacity='.5'/%3E%3Ctext x='32' y='45' font-family='serif' font-size='38' font-weight='bold' fill='%23f1d79c' text-anchor='middle'%3EL%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="assets/app/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/app/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/app/icon-180.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Cinzel:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Shippori+Mincho:wght@500;700&family=DotGothic16&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/views.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/growth.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/forge.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/announce.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/cosmetics.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/playground.css?v=20261110V37" />
-  <link rel="stylesheet" href="css/tutorial.css?v=20261110V37" />
+  <link rel="stylesheet" href="css/base.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/views.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/growth.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/forge.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/announce.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/cosmetics.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/playground.css?v=20261110V40" />
+  <link rel="stylesheet" href="css/tutorial.css?v=20261110V40" />
 </head>
 <body>
   <canvas id="starfield" aria-hidden="true"></canvas>
@@ -27,50 +30,50 @@
   <div id="modal-root"></div>
   <div id="toast-root" aria-live="polite"></div>
 
-  <script src="js/core/utils.js?v=20261110V37"></script>
-  <script src="js/core/store.js?v=20261110V37"></script>
-  <script src="js/core/cloud.js?v=20261110V37"></script>
-  <script src="js/core/social.js?v=20261110V37"></script>
-  <script src="js/core/pixel.js?v=20261110V37"></script>
-  <script src="js/core/aichar.js?v=20261110V37"></script>
-  <script src="js/data/languages.js?v=20261110V37"></script>
-  <script src="js/data/items.js?v=20261110V37"></script>
-  <script src="js/data/progression.js?v=20261110V37"></script>
-  <script src="js/data/awaken.js?v=20261110V37"></script>
-  <script src="js/data/cosmetics.js?v=20261110V37"></script>
-  <script src="js/data/python.js?v=20261110V37"></script>
-  <script src="js/data/java.js?v=20261110V37"></script>
-  <script src="js/data/c.js?v=20261110V37"></script>
-  <script src="js/data/javascript.js?v=20261110V37"></script>
-  <script src="js/data/cpp.js?v=20261110V37"></script>
-  <script src="js/data/go.js?v=20261110V37"></script>
+  <script src="js/core/utils.js?v=20261110V40"></script>
+  <script src="js/core/store.js?v=20261110V40"></script>
+  <script src="js/core/cloud.js?v=20261110V40"></script>
+  <script src="js/core/social.js?v=20261110V40"></script>
+  <script src="js/core/pixel.js?v=20261110V40"></script>
+  <script src="js/core/aichar.js?v=20261110V40"></script>
+  <script src="js/data/languages.js?v=20261110V40"></script>
+  <script src="js/data/items.js?v=20261110V40"></script>
+  <script src="js/data/progression.js?v=20261110V40"></script>
+  <script src="js/data/awaken.js?v=20261110V40"></script>
+  <script src="js/data/cosmetics.js?v=20261110V40"></script>
+  <script src="js/data/python.js?v=20261110V40"></script>
+  <script src="js/data/java.js?v=20261110V40"></script>
+  <script src="js/data/c.js?v=20261110V40"></script>
+  <script src="js/data/javascript.js?v=20261110V40"></script>
+  <script src="js/data/cpp.js?v=20261110V40"></script>
+  <script src="js/data/go.js?v=20261110V40"></script>
   <!-- 第二卷 · 源核之下：在基础语言数据之后挂载 -->
-  <script src="js/data/python-ext.js?v=20261110V37"></script>
-  <script src="js/data/java-ext.js?v=20261110V37"></script>
-  <script src="js/data/c-ext.js?v=20261110V37"></script>
-  <script src="js/data/javascript-ext.js?v=20261110V37"></script>
-  <script src="js/data/cpp-ext.js?v=20261110V37"></script>
-  <script src="js/data/go-ext-a.js?v=20261110V37"></script>
-  <script src="js/data/go-ext-b.js?v=20261110V37"></script>
-  <script src="js/data/titles.js?v=20261110V37"></script>
-  <script src="js/data/exams.js?v=20261110V37"></script>
-  <script src="js/data/announce.js?v=20261110V37"></script>
-  <script src="js/engine/microrun.js?v=20261110V37"></script>
-  <script src="js/core/battleplan.js?v=20261110V37"></script>
-  <script src="js/core/codeeditor.js?v=20261110V37"></script>
-  <script src="js/views/auth.js?v=20261110V37"></script>
-  <script src="js/views/onboarding.js?v=20261110V37"></script>
-  <script src="js/views/tutorial.js?v=20261110V37"></script>
-  <script src="js/views/hub.js?v=20261110V37"></script>
-  <script src="js/views/world.js?v=20261110V37"></script>
-  <script src="js/views/lesson.js?v=20261110V37"></script>
-  <script src="js/views/growth.js?v=20261110V37"></script>
-  <script src="js/views/forge.js?v=20261110V37"></script>
-  <script src="js/views/training.js?v=20261110V37"></script>
-  <script src="js/views/battle.js?v=20261110V37"></script>
-  <script src="js/views/profile.js?v=20261110V37"></script>
-  <script src="js/views/friends.js?v=20261110V37"></script>
-  <script src="js/views/exams.js?v=20261110V37"></script>
-  <script src="js/app.js?v=20261110V37"></script>
+  <script src="js/data/python-ext.js?v=20261110V40"></script>
+  <script src="js/data/java-ext.js?v=20261110V40"></script>
+  <script src="js/data/c-ext.js?v=20261110V40"></script>
+  <script src="js/data/javascript-ext.js?v=20261110V40"></script>
+  <script src="js/data/cpp-ext.js?v=20261110V40"></script>
+  <script src="js/data/go-ext-a.js?v=20261110V40"></script>
+  <script src="js/data/go-ext-b.js?v=20261110V40"></script>
+  <script src="js/data/titles.js?v=20261110V40"></script>
+  <script src="js/data/exams.js?v=20261110V40"></script>
+  <script src="js/data/announce.js?v=20261110V40"></script>
+  <script src="js/engine/microrun.js?v=20261110V40"></script>
+  <script src="js/core/battleplan.js?v=20261110V40"></script>
+  <script src="js/core/codeeditor.js?v=20261110V40"></script>
+  <script src="js/views/auth.js?v=20261110V40"></script>
+  <script src="js/views/onboarding.js?v=20261110V40"></script>
+  <script src="js/views/tutorial.js?v=20261110V40"></script>
+  <script src="js/views/hub.js?v=20261110V40"></script>
+  <script src="js/views/world.js?v=20261110V40"></script>
+  <script src="js/views/lesson.js?v=20261110V40"></script>
+  <script src="js/views/growth.js?v=20261110V40"></script>
+  <script src="js/views/forge.js?v=20261110V40"></script>
+  <script src="js/views/training.js?v=20261110V40"></script>
+  <script src="js/views/battle.js?v=20261110V40"></script>
+  <script src="js/views/profile.js?v=20261110V40"></script>
+  <script src="js/views/friends.js?v=20261110V40"></script>
+  <script src="js/views/exams.js?v=20261110V40"></script>
+  <script src="js/app.js?v=20261110V40"></script>
 </body>
 </html>

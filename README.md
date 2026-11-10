@@ -19,6 +19,16 @@
 
 ---
 
+## 在线游玩
+
+- 网页版（即开即玩）：[link-sekai-ot4mp9chy59.qoder.zone](https://link-sekai-ot4mp9chy59.qoder.zone)
+- 官方站点（世界观、六大职业与三端下载）：[link-sekai-official-ot4mp9chy59.qoder.zone](https://link-sekai-official-ot4mp9chy59.qoder.zone)
+- 安卓 APK 与 Windows 安装包：[GitHub Releases](https://github.com/EliasNeko/LINK-SEKAI/releases/latest)
+
+三端共用同一套云端账号与存档，客户端内嵌线上版本，内容更新无需重新安装。
+
+---
+
 ## 这是什么
 
 《代码 Link-Sekai》是我一个人做的编程学习游戏。

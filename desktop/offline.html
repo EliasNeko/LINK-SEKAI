@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LINK-SEKAI · 连接中断</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    background: radial-gradient(120% 90% at 50% 0%, #141225 0%, #07090f 62%);
+    color: #ebe6da; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    padding: 24px;
+  }
+  .card { max-width: 460px; text-align: center; }
+  .mark {
+    width: 62px; height: 62px; margin: 0 auto 26px; display: grid; place-items: center;
+    border: 1px solid rgba(201,164,92,.55); color: #f0d79b;
+    font: 600 30px "Times New Roman", serif; background: rgba(201,164,92,.05);
+  }
+  h1 { font: 700 24px "Songti SC", "Noto Serif SC", serif; letter-spacing: .12em; margin: 0 0 12px; }
+  p { font-size: 13px; line-height: 1.9; color: #a9a294; margin: 0 0 26px; }
+  button {
+    height: 46px; padding: 0 30px; border: 1px solid #d8b36b; cursor: pointer;
+    background: linear-gradient(135deg, #f0d79b, #c9a45c); color: #171208;
+    font: 500 13px "Noto Sans SC", sans-serif; letter-spacing: .14em;
+  }
+  button:hover { filter: brightness(1.06); }
+  em { display: block; margin-top: 30px; font-style: normal; font-size: 9.5px; letter-spacing: .22em; color: #5f5a50; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">L</div>
+    <h1>星网连接中断</h1>
+    <p>客户端暂时联系不上云端。请确认网络可用，或稍后再试。<br />你的存档保存在云端，不会因为断线丢失。</p>
+    <button onclick="location.href='https://link-sekai-ot4mp9chy59.qoder.zone'">重新连接</button>
+    <em>LINK-SEKAI · DESKTOP CLIENT</em>
+  </div>
+</body>
+</html>

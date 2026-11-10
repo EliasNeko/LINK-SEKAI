@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07090f" />
+  <meta name="description" content="《代码 Link-Sekai》官方站点——把编译、报错与重构写成一场穿越星海的冒险。六门语言，六条星轨，网页、安卓与 Windows 共用同一套云端存档。" />
+  <meta name="author" content="龙潜猫隐" />
+  <title>代码 Link-Sekai · 官方站点</title>
+  <link rel="icon" href="assets/app/favicon.ico" />
+  <link rel="apple-touch-icon" href="assets/app/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css?v=2.9.2b" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <header class="site-nav" id="siteNav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark">L</span>
+        <span class="brand-text"><b>LINK-SEKAI</b><em>代码 · 星海档案</em></span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="站内导航">
+        <a href="#world"><i>01</i>世界观</a>
+        <a href="#operators"><i>02</i>六职业</a>
+        <a href="#system"><i>03</i>系统</a>
+        <a href="#download"><i>04</i>下载</a>
+        <a href="#archive"><i>05</i>视觉档案</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-play" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener">进入游戏 <span>↗</span></a>
+        <button class="nav-burger" id="navBurger" aria-label="打开导航" aria-expanded="false"><i></i><i></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/site/kv-bg.webp" alt="" fetchpriority="high" />
+        <div class="hero-shade"></div>
+        <div class="hero-vignette"></div>
+      </div>
+
+      <div class="hero-side" aria-hidden="true">
+        <span>STARLIGHT ARCHIVE</span>
+        <i></i>
+        <span>OFFICIAL SITE / 2026</span>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-eyebrow reveal"><em>星门档案 · 001</em><span>ORIGINAL WEB GAME</span></p>
+          <h1 class="hero-title reveal">
+            <span class="t-cn">代码</span>
+            <span class="t-en">LINK<span>·</span>SEKAI</span>
+            <span class="t-sub">把编译、报错与重构，写成一场穿越星海的冒险。</span>
+          </h1>
+          <p class="hero-desc reveal">六门语言，六条星轨。语法是咒文，运行时是战场，<br class="pc-only" />报错是这个世界上唯一诚实的回声。你写的每一行代码，都会留下回响。</p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-gold" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener"><span>开始游戏</span><i>→</i></a>
+            <a class="btn btn-line" href="#download"><span>下载客户端</span><i>↓</i></a>
+          </div>
+          <ul class="hero-meta reveal">
+            <li><b>v2.9.2</b><span>星港启程</span></li>
+            <li><b>06</b><span>语言星轨</span></li>
+            <li><b>CLOUD</b><span>三端同档</span></li>
+            <li><b>FREE</b><span>开源项目</span></li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-ring"></div>
+          <div class="visual-ring r2"></div>
+          <span class="visual-tick t1"></span>
+          <span class="visual-tick t2"></span>
+          <img class="hero-char" src="assets/heroes/hero_java.webp" alt="" />
+          <div class="char-tag tag-a"><b>JAVA</b><span>魔法使 · 咒</span></div>
+          <div class="char-tag tag-b"><b>DRAGON MAGE</b><span>看板娘 · 珈琲</span></div>
+          <p class="char-caption">「先让第一句咒文通过编译。」</p>
+        </div>
+      </div>
+
+      <a class="hero-scroll" href="#world" aria-label="继续浏览"><span>SCROLL</span><i></i></a>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>V2.9.2 星港启程 · 看板娘启动图标上线</span><i>◆</i>
+        <span>官方站点 · 网页 / 安卓 / Windows 三端同档</span><i>◆</i>
+        <span>浏览器可添加到主屏 · 独立窗口运行</span><i>◆</i>
+        <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
+        <span>V2.9.2 星港启程 · 看板娘启动图标上线</span><i>◆</i>
+        <span>官方站点 · 网页 / 安卓 / Windows 三端同档</span><i>◆</i>
+        <span>浏览器可添加到主屏 · 独立窗口运行</span><i>◆</i>
+        <span>六职业 · 六条星轨 · 共用同一份云存档</span><i>◆</i>
+      </div>
+    </div>
+
+    <!-- WORLD -->
+    <section class="section world" id="world">
+      <div class="world-bg" aria-hidden="true">
+        <img src="assets/site/world-bg.webp" alt="" loading="lazy" />
+        <div class="world-shade"></div>
+      </div>
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="sec-index"><i>01</i><span>WORLD / 世界观</span></p>
+          <h2 class="sec-title">世界被写成了一座塔。</h2>
+          <p class="sec-lead">编译塔悬在 Link-Sekai 的云海之上。塔里的每一层，都是一门语言留下的疆域；每一道报错，都是世界在提醒你，它还在运行。</p>
+        </header>
+
+        <div class="world-grid">
+          <article class="world-card reveal">
+            <span class="wc-no">01</span>
+            <h3>编译塔</h3>
+            <p>从第一句 <code>main</code> 到最深处的源核，塔的每一层都由语法、内存与协议垒成。守塔的不是人，是还没被正确调用的旧系统。</p>
+            <em>COMPILATION TOWER</em>
+          </article>
+          <article class="world-card reveal">
+            <span class="wc-no">02</span>
+            <h3>星轨</h3>
+            <p>六条彼此平行的学习轨迹。剧情、练习、战斗与熟练度都记在同一条星轨上，走到哪里，世界就为你亮到哪里。</p>
+            <em>ACTIVE TRACKS</em>
+          </article>
+          <article class="world-card reveal">
+            <span class="wc-no">03</span>
+            <h3>云端档案</h3>
+            <p>账号与存档存在星网里。换一台设备，换一个客户端，也接着上一次没写完的句子继续。冲突会被合并，而不是覆盖。</p>
+            <em>CLOUD ARCHIVE</em>
+          </article>
+        </div>
+
+        <div class="world-quote reveal">
+          <p>「语法不是束缚。它是这个世界唯一愿意和你讲道理的部分。」</p>
+          <span>—— 界灵 · 零</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- OPERATORS -->
+    <section class="section operators" id="operators">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="sec-index"><i>02</i><span>OPERATORS / 六职业</span></p>
+          <h2 class="sec-title">六种语言，六种看世界的方式。</h2>
+          <p class="sec-lead">选择一条星轨，就等于选择一种战斗方式。职业不是皮肤，它会改变你写代码、读报错、拆解问题的习惯。</p>
+        </header>
+      </div>
+
+      <div class="ops-scroll reveal" role="list">
+        <article class="op-card" role="listitem" style="--c:#8a6fb8;--c2:#d8b36b">
+          <span class="op-no">01</span>
+          <figure class="op-art"><img src="assets/heroes/hero_java.webp" alt="Java 魔法使" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">JAVA <em>ジャヴァ</em></p>
+            <h3>魔法使</h3>
+            <p class="op-line">以类为阵，以方法为咒。先编译，再让世界听从。</p>
+            <div class="op-foot"><span>咒</span><i></i><b>MAGE</b><code>public class</code></div>
+          </div>
+        </article>
+
+        <article class="op-card" role="listitem" style="--c:#4f9f8f;--c2:#d8b36b">
+          <span class="op-no">02</span>
+          <figure class="op-art"><img src="assets/heroes/hero_python.webp" alt="Python 影忍" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">PYTHON <em>パイソン</em></p>
+            <h3>影忍</h3>
+            <p class="op-line">短句潜行，一行之内见胜负。缩进就是呼吸。</p>
+            <div class="op-foot"><span>影</span><i></i><b>SHINOBI</b><code>def solve():</code></div>
+          </div>
+        </article>
+
+        <article class="op-card" role="listitem" style="--c:#6f9c78;--c2:#d8b36b">
+          <span class="op-no">03</span>
+          <figure class="op-art"><img src="assets/heroes/hero_c.webp" alt="C 治疗术士" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">C <em>シー</em></p>
+            <h3>治疗术士</h3>
+            <p class="op-line">贴近内存，替世界止血。每一次越界都算一道伤口。</p>
+            <div class="op-foot"><span>生</span><i></i><b>HEALER</b><code>int main</code></div>
+          </div>
+        </article>
+
+        <article class="op-card" role="listitem" style="--c:#b06a4c;--c2:#e0c184">
+          <span class="op-no">04</span>
+          <figure class="op-art"><img src="assets/heroes/hero_cpp.webp" alt="C++ 机械炼金师" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">C++ <em>シープラスプラス</em></p>
+            <h3>机械炼金师</h3>
+            <p class="op-line">指针与齿轮，皆可重铸。代价写在每一行 new 后面。</p>
+            <div class="op-foot"><span>构</span><i></i><b>ALCHEMIST</b><code>template&lt;T&gt;</code></div>
+          </div>
+        </article>
+
+        <article class="op-card" role="listitem" style="--c:#c99a4b;--c2:#e8d3a2">
+          <span class="op-no">05</span>
+          <figure class="op-art"><img src="assets/heroes/hero_javascript.webp" alt="JavaScript 誓约骑士" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">JAVASCRIPT <em>ジャヴァスクリプト</em></p>
+            <h3>誓约骑士</h3>
+            <p class="op-line">在浏览器里立下不可撤销的誓。异步，但从不失约。</p>
+            <div class="op-foot"><span>誓</span><i></i><b>KNIGHT</b><code>await promise</code></div>
+          </div>
+        </article>
+
+        <article class="op-card" role="listitem" style="--c:#4f8fa8;--c2:#d8c48a">
+          <span class="op-no">06</span>
+          <figure class="op-art"><img src="assets/heroes/hero_go.webp" alt="Go 星港游侠" loading="lazy" /></figure>
+          <div class="op-body">
+            <p class="op-lang">GO <em>ゴー</em></p>
+            <h3>星港游侠</h3>
+            <p class="op-line">并发启航，沿着星港的航线。轻装，但从不掉队。</p>
+            <div class="op-foot"><span>航</span><i></i><b>RANGER</b><code>go func()</code></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="wrap">
+        <p class="ops-hint reveal">横向滑动查看全部六位 · DRAG / SWIPE</p>
+      </div>
+    </section>
+
+    <!-- SYSTEM -->
+    <section class="section system" id="system">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="sec-index"><i>03</i><span>SYSTEM / 玩法与系统</span></p>
+          <h2 class="sec-title">不止是课程，是一场可以反复进入的远征。</h2>
+        </header>
+
+        <div class="sys-grid">
+          <article class="sys-item reveal">
+            <span class="sys-no">01</span>
+            <div class="sys-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 5 3 12l5 7M16 5l5 7-5 7M13 4l-2 16"/></svg>
+            </div>
+            <h3>编译器战斗</h3>
+            <p>在限时回合里写出能通过判定的代码。语法错误会变成敌人的护甲，运行结果才是真正的伤害。</p>
+          </article>
+          <article class="sys-item reveal">
+            <span class="sys-no">02</span>
+            <div class="sys-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+            </div>
+            <h3>六语言课程</h3>
+            <p>从输出、变量到指针与并发，每一章都有剧情、练习与 BOSS。关卡随语言特性单独编排。</p>
+          </article>
+          <article class="sys-item reveal">
+            <span class="sys-no">03</span>
+            <div class="sys-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 17 8a4 4 0 0 1 1 7.87M12 12v7M9 16l3-3 3 3"/></svg>
+            </div>
+            <h3>云端同步</h3>
+            <p>星辉、经验、装备、进度与好友关系实时写回云端。两台设备同时改动时，冲突会被合并而不是覆盖。</p>
+          </article>
+          <article class="sys-item reveal">
+            <span class="sys-no">04</span>
+            <div class="sys-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2.5" y="4" width="19" height="13" rx="1.5"/><path d="M9 21h6M12 17v4"/></svg>
+            </div>
+            <h3>跨端游玩</h3>
+            <p>网页、Android 与 Windows 共用一套账号与存档。在哪一端写下最后一句，就在哪一端继续编译。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section class="section download" id="download">
+      <div class="download-bg" aria-hidden="true">
+        <img src="assets/site/download-bg.webp" alt="" loading="lazy" />
+        <div class="download-shade"></div>
+      </div>
+      <div class="wrap">
+        <header class="sec-head center reveal">
+          <p class="sec-index"><i>04</i><span>DOWNLOAD / 下载</span></p>
+          <h2 class="sec-title">选择你的入口。</h2>
+          <p class="sec-lead">网页版即刻开始；客户端与网页共用同一套云端账号。首次进入需要注册星网通行证。</p>
+        </header>
+
+        <div class="dl-grid">
+          <article class="dl-card reveal">
+            <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 4 5.6 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.6-4-9s1.4-6.5 4-9z"/></svg></span><em>WEB</em></div>
+            <h3>网页版</h3>
+            <p class="dl-desc">无需安装，浏览器直接进入。适合电脑与手机随时开一局。</p>
+            <dl class="dl-meta"><div><dt>平台</dt><dd>任意现代浏览器</dd></div><div><dt>大小</dt><dd>无需下载</dd></div><div><dt>存档</dt><dd>云端同步</dd></div></dl>
+            <a class="btn btn-gold dl-btn" href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener"><span>立即游玩</span><i>→</i></a>
+          </article>
+
+          <article class="dl-card reveal">
+            <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 9h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 9 6 6M17 9l1-3M9 13v2M15 13v2M9.5 17.5h5"/><circle cx="9" cy="7" r=".6" fill="currentColor"/><circle cx="15" cy="7" r=".6" fill="currentColor"/></svg></span><em>ANDROID</em></div>
+            <h3>安卓客户端</h3>
+            <p class="dl-desc">APK 直接安装，指向同一套云端。适合在手机上刷题与打关卡。</p>
+            <dl class="dl-meta"><div><dt>版本</dt><dd id="apkVer">v2.9.2</dd></div><div><dt>大小</dt><dd id="apkSize">约 1 MB</dd></div><div><dt>要求</dt><dd>Android 8.0+</dd></div></dl>
+            <a class="btn btn-line dl-btn" id="apkBtn" href="#download" data-dl="apk"><span>下载 APK</span><i>↓</i></a>
+          </article>
+
+          <article class="dl-card reveal">
+            <div class="dl-top"><span class="dl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span><em>WINDOWS</em></div>
+            <h3>桌面客户端</h3>
+            <p class="dl-desc">EXE 安装包，本地启动，窗口化运行。数据仍保存在云端。</p>
+            <dl class="dl-meta"><div><dt>版本</dt><dd id="exeVer">v2.9.2</dd></div><div><dt>大小</dt><dd id="exeSize">约 79 MB</dd></div><div><dt>要求</dt><dd>Windows 10/11</dd></div></dl>
+            <a class="btn btn-line dl-btn" id="exeBtn" href="#download" data-dl="exe"><span>下载 EXE</span><i>↓</i></a>
+          </article>
+        </div>
+
+        <p class="dl-note reveal">客户端内嵌线上版本，更新后无需重新下载安装包；账号与网页版互通。遇到问题可在 GitHub 提交 Issue。</p>
+      </div>
+    </section>
+
+    <!-- ARCHIVE / WALLPAPERS -->
+    <section class="section archive" id="archive">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="sec-index"><i>05</i><span>ARCHIVE / 视觉档案</span></p>
+          <h2 class="sec-title">把星海带走。</h2>
+          <p class="sec-lead">官方站点主视觉与场景原画，提供原尺寸下载，可作桌面或手机壁纸。</p>
+        </header>
+
+        <div class="wall-grid">
+          <a class="wall-card reveal" href="assets/site/kv-bg.webp" download="link-sekai-kv.webp">
+            <img src="assets/site/kv-bg.webp" alt="编译塔主视觉" loading="lazy" />
+            <span class="wall-info"><b>编译塔 · 主视觉</b><em>1792 × 982 · WEBP ↓</em></span>
+          </a>
+          <a class="wall-card reveal" href="assets/site/world-bg.webp" download="link-sekai-world.webp">
+            <img src="assets/site/world-bg.webp" alt="服务器圣堂场景" loading="lazy" />
+            <span class="wall-info"><b>服务器圣堂 · 场景</b><em>1792 × 982 · WEBP ↓</em></span>
+          </a>
+          <a class="wall-card reveal" href="assets/site/download-bg.webp" download="link-sekai-gate.webp">
+            <img src="assets/site/download-bg.webp" alt="星门观测站场景" loading="lazy" />
+            <span class="wall-info"><b>星门观测站 · 场景</b><em>1792 × 982 · WEBP ↓</em></span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <span class="brand-mark">L</span>
+          <div><b>LINK-SEKAI</b><em>代码 · 星海档案</em></div>
+        </div>
+        <nav class="foot-links" aria-label="页脚导航">
+          <a href="https://github.com/EliasNeko/LINK-SEKAI" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+          <a href="https://link-sekai-ot4mp9chy59.qoder.zone" target="_blank" rel="noopener">进入游戏 ↗</a>
+          <a href="#top">回到顶部 ↑</a>
+        </nav>
+      </div>
+      <p class="foot-note">《代码 Link-Sekai》由龙潜猫隐独立制作并开源。本站为个人语言学习与技术练习项目，不用于任何商业用途。</p>
+      <p class="foot-credit">本站主视觉与场景原画为项目定制素材；字体来自 Google Fonts。© 2026 龙潜猫隐 · LINK-SEKAI</p>
+    </div>
+  </footer>
+
+  <script src="js/site.js?v=2.9.2b"></script>
+</body>
+</html>

@@ -4,17 +4,17 @@
   'use strict';
 
   LS.ANNOUNCE = {
-    version: 'v2.9.1',
-    codename: '星冕方界',
+    version: 'v2.9.2',
+    codename: '星港启程',
     date: '2026.11.10',
     author: '龙潜猫隐',
-    tagline: '让每一张面孔，都配得上它的星轨。',
+    tagline: '从浏览器出发，去往每一块屏幕。',
     changes: [
-      { title: '云端存档 · 冲突合并修复', text: '两台设备同时改动时，旧逻辑会把云端的冲突存档读成空值，导致进度既合并不上、也拉不下来。现在冲突回包能被正确识别：星轨进度取并集、星辉与经验取较高值、装备按编号去重后再回写，本机与云端都不再丢档。' },
-      { title: '六职业二阶头像 · 正面重制', text: '不再裁切阶段立绘，直接为六位旅人生成正面头像，锁死发色、瞳色、服饰与气质；二阶头像叠加元素光晕、沿边流光与旋转光弧，脸始终清晰。' },
-      { title: '精通头像 · 职业星冕', text: '六款精通头像全部重绘：头顶冠冕、元素翼与环绕星屑层层叠加，并把最亮的光留给精通——紫晶、鎏金、圣光、雷晶、锻火与星帆各有一套专属层级。' },
-      { title: '方形头像框 · 星冕不再挡脸', text: '精通框改为六张方形金属框：咖啡杯、圣灯、雷晶、锻锤、星盘与月影徽记嵌在四角，贴着方头像向外延展，不再用圆环切掉画面。普通头像框同步改成方形几何，星辉长夜、深渊回响与星网织环都换成方正边框。' },
-      { title: '档案与手机端适配', text: '档案大头像、编辑弹窗与头像框卡片的方形星冕按容器重新收放；手机端字号与间距收紧，不横向溢出，脸与徽记都完整露出。' }
+      { title: '看板娘启动图标 · 星冕大头照', text: '为 Java 龙娘重新绘制启动图标：紫晶龙角、银白长发与金色星弧收进一枚深色方印，按二游启动图标的规格处理，脸与瞳光都完整露出。网页、安卓与桌面端共用同一枚图标。' },
+      { title: '官方站点 · 星港门户', text: '新官网把世界、六大职业、系统与档案收进同一页暗金版式，可以直接在网页游玩，也可以下载安卓 APK 与 Windows 安装包；三端账号与存档共用同一套云端。' },
+      { title: '安卓客户端 · 随身星轨', text: '新增 Android 客户端，支持文件上传、返回键回退与断网重连；安装后可直接进入游戏，与网页端实时同步进度。' },
+      { title: 'Windows 客户端 · 桌面星港', text: '新增 Windows 安装包，桌面快捷方式、开始菜单与卸载入口齐全；窗口内直接载入线上游戏，更新无需重装客户端。' },
+      { title: '浏览器安装 · 把游戏留在桌面', text: '补齐 PWA 清单、favicon 与主屏图标：手机浏览器可把游戏添加到主屏，以独立窗口运行，不再显示地址栏。' }
     ],
     openSource: [
       '《代码 Link-Sekai》由龙潜猫隐独立制作，从今天起完全开源。源代码、剧情、关卡数据与美术资源都会公开，任何人都可以免费游玩、阅读、修改，也可以把它带进课堂、社团，或者某个只想写点东西的深夜。',
@@ -26,6 +26,7 @@
       accountUrl: 'https://github.com/EliasNeko',
       repoUrl: 'https://github.com/EliasNeko/LINK-SEKAI',
       repoName: 'LINK-SEKAI',
+      siteUrl: 'https://link-sekai-official-ot4mp9chy59.qoder.zone',
       intro: [
         '我是龙潜猫隐，GitHub 账号是 EliasNeko。湖南人，软件技术专业 26 级学生，平时主要写 Java、Python、C++、NodeJS 和 Go。',
         '这个账号只用来做个人语言学习与技术练习，不会用于任何商业用途。LINK-SEKAI 的源码、关卡数据、成品美术资源与更新记录都会放在这里，后续版本也会继续在仓库里更新。',
@@ -79,6 +80,7 @@
           </a>
           <div class="gh-intro">${a.github.intro.map(p => `<p>${esc(p)}</p>`).join('')}</div>
           <div class="gh-links">
+            <a href="${esc(a.github.siteUrl)}" target="_blank" rel="noopener noreferrer">官方站点 · 星港门户 ↗</a>
             <a href="${esc(a.github.accountUrl)}" target="_blank" rel="noopener noreferrer">作者主页 · @${esc(a.github.handle)} ↗</a>
             <a href="${esc(a.github.repoUrl)}" target="_blank" rel="noopener noreferrer">LINK-SEKAI 仓库 ↗</a>
           </div>

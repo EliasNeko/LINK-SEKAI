@@ -56,6 +56,14 @@ def main():
     os.makedirs(DIST)
 
     shutil.copy2(os.path.join(ROOT, 'index.html'), os.path.join(DIST, 'index.html'))
+    shutil.copy2(os.path.join(ROOT, 'manifest.webmanifest'), os.path.join(DIST, 'manifest.webmanifest'))
+    # 应用图标与 favicon 按原格式保留（manifest 必须拿到 PNG，不能转 WebP）。
+    app_icons = os.path.join(ROOT, 'assets', 'app')
+    if os.path.isdir(app_icons):
+        shutil.copytree(app_icons, os.path.join(DIST, 'assets', 'app'))
+        for f in os.listdir(os.path.join(DIST, 'assets', 'app')):
+            if f in ('icon-1024.png', 'icon-384.png'):
+                os.remove(os.path.join(DIST, 'assets', 'app', f))
     # functions/ 由部署工具单独打包成 Edge Function，不作为静态资源公开。
     for name in ('css', 'js'):
         shutil.copytree(os.path.join(ROOT, name), os.path.join(DIST, name))
@@ -69,6 +77,8 @@ def main():
                 continue
             src = os.path.join(base, f)
             rel = os.path.relpath(src, ROOT)
+            if rel.replace('\\', '/').startswith('assets/app/'):
+                continue
             if f.lower().endswith('.webp'):
                 dst = os.path.join(DIST, rel)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
