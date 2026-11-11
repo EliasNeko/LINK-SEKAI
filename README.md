@@ -7,6 +7,8 @@
 
 作者：**龙潜猫隐**
 
+> 切换 AI 或交给其他平台继续开发前，请先读 [AI_HANDOVER.md](AI_HANDOVER.md)：里面有完整结构、云端接口、构建发布流程与硬约束；任何结构改动都要同步更新它。
+
 ![大厅](docs/screenshots/hub.jpg)
 
 | 战斗 | 锻造 |

@@ -23,12 +23,20 @@ __pycache__/
 tools/__pycache__/
 *.pyc
 
-# 截图与交接文档
+# 截图与归档（不进开源仓库）
 shot-*.png
 qa-shots/
+qa/shots/
+qa/tmp/
 dist-check-*.png
 live-*.png
+docs/archive/
+outputs/
 项目交接书.md
 
 # 本机站点绑定
 *.qoder.site
+
+# API 密钥（不入库）
+.secrets/
+.env
